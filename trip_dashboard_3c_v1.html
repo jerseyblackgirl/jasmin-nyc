@@ -346,6 +346,39 @@
             object-fit: cover;
         }
         
+        /* Completed Activities Section */
+        .completed-activities {
+            margin: 15px;
+            background: #f8fdf9;
+            border-radius: 8px;
+            border-left: 4px solid var(--success-green);
+        }
+        
+        .completed-activity {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e8f5e8;
+            gap: 15px;
+        }
+        
+        .completed-activity:last-child {
+            border-bottom: none;
+        }
+        
+        .completed-time {
+            font-size: 0.8rem;
+            color: var(--success-green);
+            font-weight: 600;
+            min-width: 60px;
+        }
+        
+        .completed-name {
+            font-size: 0.9rem;
+            color: var(--success-green);
+            font-weight: 500;
+        }
+        
         .next-activity-icon {
             width: 60px;
             height: 60px;
@@ -358,8 +391,6 @@
             color: white;
             flex-shrink: 0;
         }
-        
-        /* SCHEDULE TAB */
         .day-cards {
             display: flex;
             flex-direction: column;
@@ -1181,6 +1212,55 @@
         let directionsService = null;
         let directionsRenderer = null;
 
+        // Current day's activities with state tracking
+        let currentDayActivities = [
+            {
+                id: 1,
+                time: "2:40 PM",
+                activity: "Times Square",
+                description: "Experience the electrifying energy of the Crossroads of the World, Broadway district, and classic NYC atmosphere.",
+                status: "current", // current, completed, upcoming
+                lat: 40.7589,
+                lng: -73.9851
+            },
+            {
+                id: 2,
+                time: "4:20 PM", 
+                activity: "Madison Square Garden",
+                description: "Quick visit to the World's Most Famous Arena",
+                status: "upcoming",
+                lat: 40.7505,
+                lng: -73.9934
+            },
+            {
+                id: 3,
+                time: "5:00 PM",
+                activity: "Empire State Building", 
+                description: "Observatory with breathtaking sunset views",
+                status: "upcoming",
+                lat: 40.7484,
+                lng: -73.9857
+            },
+            {
+                id: 4,
+                time: "7:45 PM",
+                activity: "Central Park",
+                description: "Evening stroll through the serene Conservatory Garden",
+                status: "upcoming", 
+                lat: 40.7829,
+                lng: -73.9654
+            },
+            {
+                id: 5,
+                time: "9:45 PM",
+                activity: "Return Journey",
+                description: "Subway → PATH → Drive to New Brunswick",
+                status: "upcoming",
+                lat: null,
+                lng: null
+            }
+        ];
+
         // Global initialization function for Google Maps
         function initGoogleMaps() {
             console.log("Google Maps API loaded successfully!");
@@ -1208,14 +1288,203 @@
         }
 
         function handleNextStop() {
-            const nextLocation = "Madison Square Garden";
-            const options = `🗺️ Next Stop: ${nextLocation}\n\n🚶 7 min walk (0.4 miles)\n🚇 4 min subway (Line 4/5/6)\n🚗 12 min drive (traffic dependent)\n\nRecommended: Walk - nice weather and close distance!`;
+            const currentActivity = getCurrentActivity();
+            const nextActivity = getNextActivity();
             
-            if (confirm(options + "\n\nOpen directions?")) {
-                window.open(`https://www.google.com/maps/dir/Times+Square,+New+York,+NY/${nextLocation},+New+York,+NY`, '_blank');
+            if (!nextActivity) {
+                alert("🎉 Congratulations! You've completed all activities for today!\n\n✨ What an amazing NYC adventure!");
+                return;
             }
             
-            console.log("User requested directions to", nextLocation);
+            // Show transition confirmation
+            const confirmMessage = `🗺️ Ready to move to next stop?
+
+📍 LEAVING: ${currentActivity.activity}
+🎯 HEADING TO: ${nextActivity.activity}
+⏰ SCHEDULED: ${nextActivity.time}
+
+${nextActivity.lat ? '🚶 Walking directions will be provided' : '🚇 Follow transit instructions'}`;
+            
+            if (confirm(confirmMessage + "\n\nProceed to next activity?")) {
+                // Mark current as completed and move to next
+                moveToNextActivity();
+                
+                // Open directions if location available
+                if (nextActivity.lat && nextActivity.lng) {
+                    if (userLocation) {
+                        showDirectionsToActivity({
+                            name: nextActivity.activity,
+                            lat: nextActivity.lat,
+                            lng: nextActivity.lng
+                        });
+                    } else {
+                        // Fallback to Google Maps
+                        const mapsUrl = `https://www.google.com/maps/dir//${nextActivity.activity.replace(' ', '+')},+New+York,+NY`;
+                        window.open(mapsUrl, '_blank');
+                    }
+                }
+                
+                console.log(`User moved from ${currentActivity.activity} to ${nextActivity.activity}`);
+            }
+        }
+
+        function getCurrentActivity() {
+            return currentDayActivities.find(activity => activity.status === "current");
+        }
+
+        function getNextActivity() {
+            const currentIndex = currentDayActivities.findIndex(activity => activity.status === "current");
+            return currentDayActivities[currentIndex + 1] || null;
+        }
+
+        function moveToNextActivity() {
+            const currentIndex = currentDayActivities.findIndex(activity => activity.status === "current");
+            
+            if (currentIndex !== -1) {
+                // Mark current as completed
+                currentDayActivities[currentIndex].status = "completed";
+                
+                // Mark next as current (if exists)
+                if (currentIndex + 1 < currentDayActivities.length) {
+                    currentDayActivities[currentIndex + 1].status = "current";
+                }
+                
+                // Update the entire Today tab
+                updateTodayTab();
+                
+                // Update map markers if map is loaded
+                if (map) {
+                    updateMapMarkers();
+                }
+            }
+        }
+
+        function updateTodayTab() {
+            const currentActivity = getCurrentActivity();
+            const completedActivities = currentDayActivities.filter(activity => activity.status === "completed");
+            const upcomingActivities = currentDayActivities.filter(activity => activity.status === "upcoming");
+            
+            // Update current activity section
+            if (currentActivity) {
+                updateCurrentActivitySection(currentActivity);
+            }
+            
+            // Update coming up next section
+            updateComingUpNextSection(upcomingActivities);
+            
+            // Update completed activities section (if any)
+            updateCompletedActivitiesSection(completedActivities);
+        }
+
+        function updateCurrentActivitySection(activity) {
+            const currentActivityElement = document.querySelector('.current-activity');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            currentActivityElement.innerHTML = `
+                <div class="activity-now">HAPPENING NOW • ${timeString}</div>
+                <div class="activity-title">${activity.activity}</div>
+                <div class="activity-description">${activity.description}</div>
+                
+                <div class="quick-actions">
+                    <button class="action-btn orange" onclick="handleImHere()">📍 I'm Here</button>
+                    <button class="action-btn" onclick="handleNextStop()">🗺️ Next Stop</button>
+                    <button class="action-btn secondary" onclick="handleSkip()">⏭️ Skip</button>
+                </div>
+            `;
+        }
+
+        function updateComingUpNextSection(upcomingActivities) {
+            const nextActivitiesContainer = document.querySelector('.next-activities');
+            
+            if (upcomingActivities.length === 0) {
+                nextActivitiesContainer.innerHTML = `
+                    <div class="section-title">
+                        <span>🎉</span>
+                        All Done!
+                    </div>
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        You've completed all activities for today. Great job exploring NYC!
+                    </div>
+                `;
+                return;
+            }
+            
+            const nextActivitiesHTML = upcomingActivities.slice(0, 3).map(activity => {
+                const hasImage = activityImages[activity.activity];
+                
+                return `
+                    <div class="next-activity">
+                        <div class="next-activity-details">
+                            <div class="next-time">${activity.time}</div>
+                            <div class="next-name">${activity.activity}</div>
+                            <div class="next-desc">${activity.description}</div>
+                        </div>
+                        ${hasImage ? `
+                            <div class="next-activity-image" onclick="openImageModal('${activity.activity}')">
+                                <img src="${hasImage}" alt="${activity.activity}">
+                            </div>
+                        ` : `
+                            <div class="next-activity-icon">
+                                🎯
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+            
+            nextActivitiesContainer.innerHTML = `
+                <div class="section-title">
+                    <span>⏰</span>
+                    Coming Up Next
+                </div>
+                ${nextActivitiesHTML}
+            `;
+        }
+
+        function updateCompletedActivitiesSection(completedActivities) {
+            if (completedActivities.length === 0) return;
+            
+            // Add completed section above current activity
+            const todayContent = document.querySelector('.today-content');
+            const currentActivity = document.querySelector('.current-activity');
+            
+            // Remove existing completed section if it exists
+            const existingCompleted = document.querySelector('.completed-activities');
+            if (existingCompleted) {
+                existingCompleted.remove();
+            }
+            
+            const completedHTML = completedActivities.map(activity => `
+                <div class="completed-activity">
+                    <div class="completed-time">${activity.time}</div>
+                    <div class="completed-name">✅ ${activity.activity}</div>
+                </div>
+            `).join('');
+            
+            const completedSection = document.createElement('div');
+            completedSection.className = 'completed-activities';
+            completedSection.innerHTML = `
+                <div class="section-title" style="color: var(--success-green); padding: 20px;">
+                    <span>✅</span>
+                    Completed Today
+                </div>
+                ${completedHTML}
+            `;
+            
+            todayContent.insertBefore(completedSection, currentActivity);
+        }
+
+        function updateMapMarkers() {
+            // This will refresh map markers based on current activity states
+            if (map) {
+                // Clear existing markers and redraw with updated states
+                addActivityMarkers();
+            }
         }
 
         function handleSkip() {
@@ -1422,18 +1691,21 @@
         }
 
         function addActivityMarkers() {
-            const todayActivities = [
-                { name: "Times Square", lat: 40.7589, lng: -73.9851 },
-                { name: "Madison Square Garden", lat: 40.7505, lng: -73.9934 },
-                { name: "Empire State Building", lat: 40.7484, lng: -73.9857 },
-                { name: "Central Park", lat: 40.7829, lng: -73.9654 }
-            ];
+            // Clear existing markers first (except user marker)
+            // Note: In a real implementation, you'd want to store and manage markers
+            
+            const todayActivities = currentDayActivities.filter(activity => activity.lat && activity.lng);
             
             todayActivities.forEach((activity, index) => {
+                // Choose marker color based on status
+                let fillColor = "#BEC0C2"; // Default gray for upcoming
+                if (activity.status === "current") fillColor = "#F58426"; // Orange for current
+                if (activity.status === "completed") fillColor = "#10b981"; // Green for completed
+                
                 const marker = new google.maps.Marker({
                     position: { lat: activity.lat, lng: activity.lng },
                     map: map,
-                    title: activity.name,
+                    title: activity.activity,
                     label: {
                         text: (index + 1).toString(),
                         color: "white",
@@ -1442,7 +1714,7 @@
                     icon: {
                         url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
-                                <circle cx="15" cy="15" r="12" fill="#006BB6" stroke="#fff" stroke-width="2"/>
+                                <circle cx="15" cy="15" r="12" fill="${fillColor}" stroke="#fff" stroke-width="2"/>
                             </svg>
                         `),
                         scaledSize: new google.maps.Size(30, 30)
@@ -1451,7 +1723,15 @@
                 
                 // Add click event for marker
                 marker.addListener('click', () => {
-                    showDirectionsToActivity(activity);
+                    if (activity.status === "completed") {
+                        alert(`✅ ${activity.activity} - Completed!`);
+                    } else {
+                        showDirectionsToActivity({
+                            name: activity.activity,
+                            lat: activity.lat,
+                            lng: activity.lng
+                        });
+                    }
                 });
             });
         }
@@ -1502,25 +1782,33 @@
         }
 
         function checkProximityToActivities() {
-            const todayActivities = [
-                { name: "Times Square", lat: 40.7589, lng: -73.9851 },
-                { name: "Madison Square Garden", lat: 40.7505, lng: -73.9934 },
-                { name: "Empire State Building", lat: 40.7484, lng: -73.9857 },
-                { name: "Central Park", lat: 40.7829, lng: -73.9654 }
-            ];
+            const currentActivity = getCurrentActivity();
+            if (!currentActivity || !currentActivity.lat) return;
             
-            todayActivities.forEach(activity => {
-                const distance = calculateDistance(
-                    userLocation.lat, userLocation.lng,
-                    activity.lat, activity.lng
-                );
-                
-                // If within 100 meters (0.1 km), show notification
-                if (distance < 0.1) {
-                    console.log(`Near ${activity.name}! Distance: ${(distance * 1000).toFixed(0)}m`);
-                    // You could show a notification here
-                }
-            });
+            const distance = calculateDistance(
+                userLocation.lat, userLocation.lng,
+                currentActivity.lat, currentActivity.lng
+            );
+            
+            // If within 100 meters (0.1 km) of current activity, show notification
+            if (distance < 0.1) {
+                console.log(`Near ${currentActivity.activity}! Distance: ${(distance * 1000).toFixed(0)}m`);
+                // Could trigger automatic "I'm Here" or show notification
+                showArrivalNotification(currentActivity, distance);
+            }
+        }
+
+        function showArrivalNotification(activity, distance) {
+            // Show a subtle notification that they've arrived
+            // This could be enhanced with actual notifications API
+            const distanceMeters = Math.round(distance * 1000);
+            console.log(`🎯 You're within ${distanceMeters}m of ${activity.activity}!`);
+            
+            // Update location status to show proximity
+            const locationStatus = document.querySelector('.location-status span');
+            if (locationStatus) {
+                locationStatus.textContent = `Near ${activity.activity} • ${distanceMeters}m away`;
+            }
         }
 
         function calculateDistance(lat1, lng1, lat2, lng2) {
