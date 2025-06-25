@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Trip Dashboard - Three Column Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #f8f9fa;
+            color: #2c2c2c;
+            line-height: 1.6;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            height: 100vh;
+            gap: 1px;
+            background: #e9ecef;
+        }
+        
+        .left-sidebar {
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            overflow-y: auto;
+            color: white;
+        }
+        
+        .main-content {
+            background: #f8f9fa;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+        
+        .right-sidebar {
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            overflow-y: auto;
+            color: white;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        
+        .sidebar-title {
+            color: #F58426;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #F58426;
+        }
+        
+        .sidebar-content {
+            color: #BEC0C2;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .placeholder-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #006BB6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #006BB6 0%, #0056a3 50%, #004489 100%);
+            padding: 60px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1600&h=900&fit=crop') center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .header > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 4rem;
+            font-style: italic;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header h2 {
+            font-size: 1.8rem;
+            color: #F58426;
+            margin-bottom: 25px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            color: #BEC0C2;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 35px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .trip-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            color: #BEC0C2;
+        }
+        
+        .itinerary {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+        
+        .day-accordion {
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .day-accordion:last-child {
+            border-bottom: none;
+        }
+        
+        .day-header {
+            padding: 25px 30px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 4px solid #BEC0C2;
+        }
+        
+        .day-header:hover {
+            background: #e9ecef;
+            border-left-color: #F58426;
+        }
+        
+        .day-header.active {
+            background: #e9ecef;
+            border-left-color: #006BB6;
+        }
+        
+        .day-info {
+            flex: 1;
+        }
+        
+        .day-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #006BB6;
+            margin-bottom: 5px;
+        }
+        
+        .day-summary {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .day-toggle {
+            font-size: 1.5rem;
+            color: #F58426;
+            transition: transform 0.3s ease;
+        }
+        
+        .day-header.active .day-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .day-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: white;
+        }
+        
+        .day-content.active {
+            max-height: 2000px;
+        }
+        
+        .day-activities {
+            padding: 0;
+        }
+        
+        .time-block {
+            padding: 15px 30px;
+            border-bottom: 1px solid #e9ecef;
+            background: #ffffff;
+        }
+        
+        .time-block:last-child {
+            border-bottom: none;
+        }
+        
+        .time-section-header {
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #006BB6;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #F58426;
+        }
+        
+        .activity-item {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 20px;
+            align-items: start;
+            padding: 15px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-item.featured {
+            background: linear-gradient(135deg, rgba(245, 132, 38, 0.1), rgba(245, 132, 38, 0.05));
+            border-left: 4px solid #F58426;
+            padding-left: 16px;
+            margin-left: -20px;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .activity-time {
+            font-weight: bold;
+            color: #006BB6;
+            font-size: 0.9rem;
+            padding-top: 5px;
+        }
+        
+        .activity-item.travel-item .activity-content {
+            gap: 0;
+        }
+        
+        .activity-item.travel-item .activity-details {
+            margin-left: 0;
+        }
+        
+        .activity-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .activity-visual {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .activity-visual:hover {
+            transform: scale(1.05);
+        }
+        
+        .activity-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .activity-icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #006BB6, #004489);
+            color: white;
+        }
+        
+        .activity-details {
+            flex: 1;
+        }
+        
+        .activity-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        
+        .activity-description {
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .activity-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        
+        .tag {
+            background: #e9ecef;
+            color: #006BB6;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .cost-info {
+            background: rgba(245, 132, 38, 0.1);
+            color: #F58426;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 8px;
+            font-weight: 500;
+            border: 1px solid rgba(245, 132, 38, 0.3);
+        }
+        
+        .gallery-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-modal.active {
+            display: flex;
+        }
+        
+        .gallery-content {
+            max-width: 80%;
+            max-height: 80%;
+            position: relative;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        .gallery-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        .gallery-description {
+            color: white;
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 250px 1fr 250px;
+            }
+            
+            .header h1 {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr auto;
+                height: auto;
+            }
+            
+            .left-sidebar, .right-sidebar {
+                height: auto;
+                max-height: 200px;
+                position: relative;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .trip-details {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .activity-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .activity-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .activity-visual {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="left-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Day Navigation</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">Saturday 7/12 - Arrival Day</div>
+                    <div class="placeholder-item">Sunday 7/13 - Yankees Game</div>
+                    <div class="placeholder-item">Monday 7/14 - Bronx Zoo</div>
+                    <div class="placeholder-item">Tuesday 7/15 - Rutgers Tour</div>
+                    <div class="placeholder-item">Wednesday 7/16 - Manhattan</div>
+                    <div class="placeholder-item">Thursday 7/17 - Brooklyn</div>
+                    <div class="placeholder-item">Friday 7/18 - American Dream</div>
+                    <div class="placeholder-item">Saturday 7/19 - Departure</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Weather</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">Current: 72°F Sunny</div>
+                    <div class="placeholder-item">Tomorrow: 75°F Partly Cloudy</div>
+                    <div class="placeholder-item">Weekend: 68°F Light Rain</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Actions</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">Navigate to Current Day</div>
+                    <div class="placeholder-item">Check Traffic Updates</div>
+                    <div class="placeholder-item">View Photo Gallery</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="container">
+                <div class="header">
+                    <h1>New York City</h1>
+                    <h2>8-Day Family Adventure</h2>
+                    <div class="header-description">
+                        Experience the ultimate NYC journey from the electric atmosphere of Yankee Stadium to the wonder of the Bronx Zoo, iconic Manhattan landmarks, and the classic charm of Coney Island. Eight unforgettable days of culture, cuisine, and city exploration await.
+                    </div>
+                    
+                    <div class="trip-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Departure:</div>
+                            <div class="detail-value">July 12, 2025</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Return:</div>
+                            <div class="detail-value">July 19, 2025</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Base Location:</div>
+                            <div class="detail-value">New Brunswick, NJ</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Transportation:</div>
+                            <div class="detail-value">Car + PATH Train</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="itinerary" id="itinerary">
+                    <!-- Accordion content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Trip Overview</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">Total Days: 8</div>
+                    <div class="placeholder-item">Major Attractions: 12+</div>
+                    <div class="placeholder-item">Transport Budget: $102</div>
+                    <div class="placeholder-item">Estimated Miles: 350+</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Cost Breakdown</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">NYC Tolls: $53</div>
+                    <div class="placeholder-item">Parking Fees: $49</div>
+                    <div class="placeholder-item">Gas Estimate: $75</div>
+                    <div class="placeholder-item">Transit Passes: $28</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Travel Notes</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">Parking Base: 5 Spruce St, Jersey City</div>
+                    <div class="placeholder-item">PATH Route: Journal Square ↔ Manhattan</div>
+                    <div class="placeholder-item">Heavy Travel: Mon (Bronx) & Thu (Brooklyn)</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Activity Highlights</div>
+                <div class="sidebar-content">
+                    <div class="placeholder-item">⚾ Yankees Game (7.5h)</div>
+                    <div class="placeholder-item">🦁 Bronx Zoo (6h)</div>
+                    <div class="placeholder-item">🗽 Manhattan Full Day</div>
+                    <div class="placeholder-item">🎢 Coney Island (4h)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-modal" id="galleryModal">
+        <div class="gallery-content">
+            <button class="gallery-close" onclick="closeGallery()">×</button>
+            <img class="gallery-image" id="galleryImage" src="" alt="">
+            <div class="gallery-description" id="galleryDescription"></div>
+        </div>
+    </div>
+
+    <script>
+        const activityImages = {
+            "Yankees Game Experience": {
+                url: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&h=600&fit=crop",
+                description: "Experience the electric atmosphere of America's pastime at the iconic Yankee Stadium"
+            },
+            "Bronx Zoo Visit": {
+                url: "https://images.unsplash.com/photo-1549480017-d76466d40b47?w=800&h=600&fit=crop",
+                description: "Get up close with over 4,000 animals across 265 acres of wildlife conservation"
+            },
+            "World Trade Center": {
+                url: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&h=600&fit=crop",
+                description: "Pay respects and witness the powerful memorial at Ground Zero"
+            },
+            "Times Square": {
+                url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop",
+                description: "Immerse yourself in the neon-lit heart of Manhattan"
+            },
+            "Empire State Building": {
+                url: "https://images.unsplash.com/photo-1576840019990-c98b1bb1b1c4?w=800&h=600&fit=crop",
+                description: "Soar above NYC with breathtaking 360° views from the iconic observatory"
+            },
+            "Central Park": {
+                url: "https://images.unsplash.com/photo-1539650116574-75c0c6d90469?w=800&h=600&fit=crop",
+                description: "Find tranquility in Manhattan's green oasis at the Conservatory Garden"
+            },
+            "Coney Island Experience": {
+                url: "https://images.unsplash.com/photo-1539650116574-75c0c6d90469?w=800&h=600&fit=crop",
+                description: "Relive classic Americana with carnival rides, boardwalks, and Nathan's hot dogs"
+            },
+            "American Dream Mall": {
+                url: "https://images.unsplash.com/photo-1567726375657-40abc9adecec?w=800&h=600&fit=crop",
+                description: "Shop, dine, and play at one of the largest malls in the Western Hemisphere"
+            }
+        };
+
+        const itineraryData = [
+            {
+                date: "Saturday, July 12",
+                title: "Arrival Day",
+                summary: "Travel and hotel check-in",
+                timeBlocks: [
+                    {
+                        period: "All Day",
+                        activities: [
+                            {
+                                time: "6:00 AM",
+                                activity: "Arrival from Atlanta",
+                                description: "Flight from ATL to Newark/JFK. Ground transportation to New Brunswick hotel.",
+                                icon: "✈️",
+                                tags: ["Travel", "Arrival"]
+                            },
+                            {
+                                time: "6:00 PM",
+                                activity: "Hotel Check-in & Rest",
+                                description: "Settle into accommodations, grab dinner nearby, and prepare for tomorrow's adventure.",
+                                icon: "🏨",
+                                tags: ["Rest", "Preparation"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Sunday, July 13",
+                title: "Yankees Game Day",
+                summary: "Baseball game and birthday celebration",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "7:00 AM - 9:00 AM",
+                                activity: "Travel to Yankee Stadium",
+                                description: "Drive to Jersey City (35 min) → Park at 5 Spruce St → PATH to Herald Square (35 min) → Subway to Yankee Stadium (40 min)",
+                                tags: ["Travel"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Afternoon",
+                        activities: [
+                            {
+                                time: "9:00 AM",
+                                activity: "Yankees Game Experience",
+                                description: "Full game day experience at the legendary Yankee Stadium with stadium tour and authentic ballpark atmosphere.",
+                                icon: "⚾",
+                                tags: ["Baseball", "Stadium Tour", "Classic NYC"],
+                                featured: true
+                            }
+                        ]
+                    },
+                    {
+                        period: "Evening",
+                        activities: [
+                            {
+                                time: "4:30 PM - 6:30 PM",
+                                activity: "Return to New Brunswick",
+                                description: "Subway to Herald Square → PATH to Jersey City → Retrieve car → Drive to New Brunswick",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "7:30 PM",
+                                activity: "Birthday Celebration Dinner",
+                                description: "Special birthday dinner at a local restaurant in Metuchen, NJ, followed by family time.",
+                                icon: "🎂",
+                                tags: ["Birthday", "Celebration", "Family Time"]
+                            },
+                            {
+                                time: "9:30 PM",
+                                activity: "Free Evening",
+                                description: "Family time and relaxation after an amazing day",
+                                icon: "🏠",
+                                tags: ["Family Time", "Rest"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Monday, July 14",
+                title: "Bronx Zoo Adventure",
+                summary: "Wildlife exploration and scenic bridge views",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "8:30 AM - 10:00 AM",
+                                activity: "Travel to Bronx Zoo",
+                                description: "Drive to Bronx Zoo via scenic route (1.5 hours)",
+                                tags: ["Travel"],
+                                cost: "Toll: $17, Parking: $24"
+                            },
+                            {
+                                time: "10:00 AM",
+                                activity: "Bronx Zoo Visit",
+                                description: "Explore one of the world's largest metropolitan zoos with over 4,000 animals across 265 acres of wildlife conservation.",
+                                icon: "🦁",
+                                tags: ["Wildlife", "Conservation", "Family Fun"],
+                                featured: true
+                            }
+                        ]
+                    },
+                    {
+                        period: "Afternoon",
+                        activities: [
+                            {
+                                time: "4:00 PM - 5:00 PM",
+                                activity: "Travel to Fort Lee Park",
+                                description: "Drive from Bronx Zoo to Fort Lee Park for bridge views (1 hour)",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "5:00 PM",
+                                activity: "Fort Lee Park & GWB Views",
+                                description: "Breathtaking panoramic views of the George Washington Bridge and Manhattan skyline from New Jersey side.",
+                                icon: "🌉",
+                                tags: ["Scenic Views", "Photography", "Sunset"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Evening",
+                        activities: [
+                            {
+                                time: "7:00 PM - 8:00 PM",
+                                activity: "Return to New Brunswick",
+                                description: "Drive back to hotel via local roads (1 hour)",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "8:00 PM",
+                                activity: "Free Evening",
+                                description: "Dinner and family time to recharge",
+                                icon: "🍽️",
+                                tags: ["Rest", "Family Time"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Tuesday, July 15",
+                title: "Rutgers Campus Tour",
+                summary: "University visit and Newark exploration",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "10:00 AM",
+                                activity: "Rutgers College Tour",
+                                description: "Comprehensive campus tour and information session at prestigious Rutgers University, exploring academic facilities and student life.",
+                                icon: "🎓",
+                                tags: ["Education", "Campus Tour", "University Life"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Afternoon",
+                        activities: [
+                            {
+                                time: "2:00 PM",
+                                activity: "Drive to Newark",
+                                description: "New Brunswick → Downtown Newark exploration",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "2:45 PM",
+                                activity: "Prudential Center & Newark",
+                                description: "Visit Newark's premier sports and entertainment venue and explore the downtown area.",
+                                icon: "🏟️",
+                                tags: ["Sports Venue", "Urban Culture", "Architecture"]
+                            },
+                            {
+                                time: "3:45 PM",
+                                activity: "Return to New Brunswick",
+                                description: "Newark → New Brunswick via highway",
+                                tags: ["Travel"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Evening",
+                        activities: [
+                            {
+                                time: "4:20 PM",
+                                activity: "Free Evening",
+                                description: "Extended family time and relaxation, dinner at leisure, preparation for Manhattan day.",
+                                icon: "🛋️",
+                                tags: ["Family Time", "Rest", "Preparation"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Wednesday, July 16",
+                title: "Manhattan Exploration",
+                summary: "Iconic NYC landmarks and cultural districts",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "7:00 AM",
+                                activity: "Travel to Manhattan",
+                                description: "Drive to Jersey City → PATH to World Trade Center",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "8:10 AM",
+                                activity: "World Trade Center",
+                                description: "Moving memorial experience and reflection at Ground Zero, witnessing this architectural marvel and historical site.",
+                                icon: "🏛️",
+                                tags: ["Memorial", "History", "Reflection"],
+                                featured: true
+                            },
+                            {
+                                time: "9:50 AM",
+                                activity: "Downtown Walking Tour",
+                                description: "Walking tour through Tribeca, Chinatown, and Little Italy with authentic lunch and neighborhood exploration.",
+                                icon: "🚶",
+                                tags: ["Cultural Districts", "Food", "Walking Tour"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Afternoon",
+                        activities: [
+                            {
+                                time: "1:05 PM",
+                                activity: "Ghostbusters HQ & Soho",
+                                description: "Iconic movie location and trendy Soho neighborhood exploration",
+                                icon: "👻",
+                                tags: ["Movie Location", "Photo Op", "Trendy District"]
+                            },
+                            {
+                                time: "2:40 PM",
+                                activity: "Times Square",
+                                description: "Experience the electrifying energy of the Crossroads of the World, Broadway district, and classic NYC atmosphere.",
+                                icon: "🎭",
+                                tags: ["Iconic NYC", "Broadway", "Energy"],
+                                featured: true
+                            },
+                            {
+                                time: "4:20 PM",
+                                activity: "Madison Square Garden",
+                                description: "Quick visit to the World's Most Famous Arena",
+                                icon: "🏟️",
+                                tags: ["Sports Venue", "Famous Arena"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Evening",
+                        activities: [
+                            {
+                                time: "5:00 PM",
+                                activity: "Empire State Building",
+                                description: "Ascend to the observatory for breathtaking 360° city views, especially stunning at sunset.",
+                                icon: "🏢",
+                                tags: ["Observatory", "City Views", "Sunset"],
+                                featured: true
+                            },
+                            {
+                                time: "7:45 PM",
+                                activity: "Central Park",
+                                description: "Evening stroll through the serene Conservatory Garden, finding tranquility in Manhattan's green oasis.",
+                                icon: "🌳",
+                                tags: ["Nature", "Evening Walk", "Peaceful"]
+                            },
+                            {
+                                time: "9:45 PM",
+                                activity: "Return Journey",
+                                description: "Subway → PATH → Drive to New Brunswick",
+                                tags: ["Travel"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Thursday, July 17",
+                title: "Brooklyn Adventure",
+                summary: "Coney Island fun and Brooklyn culture",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "8:30 AM",
+                                activity: "Drive to Coney Island",
+                                description: "New Brunswick → Coney Island, Brooklyn via bridges",
+                                tags: ["Travel"],
+                                cost: "Tolls: $36, Parking: $25"
+                            },
+                            {
+                                time: "10:00 AM",
+                                activity: "Coney Island Experience",
+                                description: "Classic boardwalk experience with thrilling rides, beach time, and authentic Nathan's Famous hot dogs.",
+                                icon: "🎢",
+                                tags: ["Boardwalk", "Amusement Park", "Beach", "Classic NYC"],
+                                featured: true
+                            }
+                        ]
+                    },
+                    {
+                        period: "Afternoon",
+                        activities: [
+                            {
+                                time: "2:25 PM",
+                                activity: "Barclays Center",
+                                description: "Modern arena visit and exploration of downtown Brooklyn's cultural scene and architecture.",
+                                icon: "🏟️",
+                                tags: ["Modern Architecture", "Brooklyn Culture", "Sports"]
+                            },
+                            {
+                                time: "3:40 PM",
+                                activity: "Junior's Restaurant",
+                                description: "World-famous cheesecake at this Brooklyn institution since 1950, a true local culinary experience.",
+                                icon: "🍰",
+                                tags: ["Famous Cheesecake", "Brooklyn Institution", "Local Culture"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Evening",
+                        activities: [
+                            {
+                                time: "5:40 PM",
+                                activity: "Return to New Brunswick",
+                                description: "Scenic drive back to New Brunswick",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "7:00 PM",
+                                activity: "Free Evening",
+                                description: "Dinner and family time to unwind from Brooklyn adventure.",
+                                icon: "🍽️",
+                                tags: ["Rest", "Family Time", "Reflection"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Friday, July 18",
+                title: "American Dream Mall",
+                summary: "Shopping and entertainment complex",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "10:00 AM",
+                                activity: "Drive to American Dream",
+                                description: "New Brunswick → American Dream Mall (complimentary parking)",
+                                tags: ["Travel"]
+                            }
+                        ]
+                    },
+                    {
+                        period: "Afternoon",
+                        activities: [
+                            {
+                                time: "10:40 AM",
+                                activity: "American Dream Mall",
+                                description: "Full day of shopping, dining, and entertainment including attractions, retail therapy, and family activities.",
+                                icon: "🛍️",
+                                tags: ["Shopping", "Entertainment", "Family Fun", "Dining"],
+                                featured: true
+                            }
+                        ]
+                    },
+                    {
+                        period: "Evening",
+                        activities: [
+                            {
+                                time: "3:40 PM",
+                                activity: "Return to New Brunswick",
+                                description: "American Dream → New Brunswick for final evening",
+                                tags: ["Travel"]
+                            },
+                            {
+                                time: "4:20 PM",
+                                activity: "Final Evening",
+                                description: "Return to New Brunswick for final evening of trip, packing, reflection on memories made, and preparation for departure.",
+                                icon: "📦",
+                                tags: ["Preparation", "Reflection", "Packing"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                date: "Saturday, July 19",
+                title: "Departure Day",
+                summary: "Journey home with incredible memories",
+                timeBlocks: [
+                    {
+                        period: "Morning",
+                        activities: [
+                            {
+                                time: "6:00 AM",
+                                activity: "Departure to Georgia",
+                                description: "Hotel check-out and safe travels back to Atlanta, carrying unforgettable memories of the NYC adventure.",
+                                icon: "✈️",
+                                tags: ["Departure", "Travel Home", "Memories"]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        function openGallery(activityName) {
+            const modal = document.getElementById('galleryModal');
+            const image = document.getElementById('galleryImage');
+            const description = document.getElementById('galleryDescription');
+            
+            if (activityImages[activityName]) {
+                image.src = activityImages[activityName].url;
+                description.textContent = activityImages[activityName].description;
+                modal.classList.add('active');
+            }
+        }
+
+        function closeGallery() {
+            document.getElementById('galleryModal').classList.remove('active');
+        }
+
+        function toggleDay(dayIndex) {
+            const header = document.querySelector(`[data-day="${dayIndex}"]`);
+            const content = document.getElementById(`day-content-${dayIndex}`);
+            
+            // Close all other days
+            document.querySelectorAll('.day-header').forEach(h => {
+                if (h !== header) {
+                    h.classList.remove('active');
+                }
+            });
+            
+            document.querySelectorAll('.day-content').forEach(c => {
+                if (c !== content) {
+                    c.classList.remove('active');
+                }
+            });
+            
+            // Toggle current day
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        function renderItinerary() {
+            const container = document.getElementById('itinerary');
+            
+            container.innerHTML = itineraryData.map((day, dayIndex) => `
+                <div class="day-accordion">
+                    <div class="day-header" data-day="${dayIndex}" onclick="toggleDay(${dayIndex})">
+                        <div class="day-info">
+                            <div class="day-title">${day.date}</div>
+                            <div class="day-summary">${day.summary}</div>
+                        </div>
+                        <div class="day-toggle">▼</div>
+                    </div>
+                    <div class="day-content" id="day-content-${dayIndex}">
+                        <div class="day-activities">
+                            ${day.timeBlocks.map(timeBlock => `
+                                <div class="time-block">
+                                    <div class="time-section-header">${timeBlock.period}</div>
+                                    ${timeBlock.activities.map(activity => {
+                                        const isTravel = activity.tags && activity.tags.includes('Travel');
+                                        
+                                        const hasImage = activityImages[activity.activity] && !isTravel;
+                                        const visualContent = hasImage ? 
+                                            `<div class="activity-visual" onclick="openGallery('${activity.activity}')">
+                                                <img class="activity-image" src="${activityImages[activity.activity].url}" alt="${activity.activity}">
+                                            </div>` : 
+                                            (isTravel ? '' : 
+                                            `<div class="activity-visual">
+                                                <div class="activity-icon">${activity.icon}</div>
+                                            </div>`);
+                                        
+                                        const tagsHtml = activity.tags && !isTravel ? 
+                                            `<div class="activity-tags">
+                                                ${activity.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                            </div>` : '';
+                                        
+                                        const costHtml = activity.cost ? 
+                                            `<div class="cost-info">💰 ${activity.cost}</div>` : '';
+                                        
+                                        return `
+                                            <div class="activity-item ${activity.featured ? 'featured' : ''} ${isTravel ? 'travel-item' : ''}">
+                                                <div class="activity-time">${activity.time}</div>
+                                                <div class="activity-content">
+                                                    ${visualContent}
+                                                    <div class="activity-details">
+                                                        <div class="activity-name">${activity.activity}</div>
+                                                        <div class="activity-description">${activity.description}</div>
+                                                        ${tagsHtml}
+                                                        ${costHtml}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Close gallery on outside click
+        document.getElementById('galleryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeGallery();
+        });
+
+        // Initialize
+        renderItinerary();
+
+        // Open first day by default
+        setTimeout(() => toggleDay(0), 500);
+    </script>
+</body>
+</html>
