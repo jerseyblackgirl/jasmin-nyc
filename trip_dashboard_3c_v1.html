@@ -206,7 +206,7 @@
         
         .today-date {
             font-size: 1.3rem;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 5px;
         }
         
@@ -234,7 +234,7 @@
         
         .activity-title {
             font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 8px;
             color: var(--text-dark);
         }
@@ -284,7 +284,7 @@
         
         .section-title {
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 600;
             color: var(--knicks-blue);
             margin-bottom: 15px;
             display: flex;
@@ -393,7 +393,7 @@
         
         .day-card-date {
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 5px;
         }
         
@@ -467,41 +467,6 @@
             margin-bottom: 8px;
             color: var(--text-dark);
             font-size: 1rem;
-        }
-        
-        .activity-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-        
-        .day-card-date {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .today-date {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--knicks-blue);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .tip-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--knicks-blue);
         }
         
         .activity-desc {
@@ -608,7 +573,7 @@
         }
         
         .tip-title {
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 10px;
             color: var(--knicks-blue);
         }
@@ -832,9 +797,9 @@
                     <div class="activity-description">You're in the heart of the Crossroads of the World! The electric energy of Broadway district surrounds you.</div>
                     
                     <div class="quick-actions">
-                        <button class="action-btn orange">📍 I'm Here</button>
-                        <button class="action-btn">🗺️ Next Stop</button>
-                        <button class="action-btn secondary">⏭️ Skip</button>
+                        <button class="action-btn orange" onclick="handleImHere()">📍 I'm Here</button>
+                        <button class="action-btn" onclick="handleNextStop()">🗺️ Next Stop</button>
+                        <button class="action-btn secondary" onclick="handleSkip()">⏭️ Skip</button>
                     </div>
                 </div>
                 
@@ -901,11 +866,14 @@
         <!-- MAP TAB -->
         <div class="tab-content" id="map-tab">
             <div class="map-container">
-                <div class="map-placeholder">
+                <div class="map-placeholder" id="map-placeholder">
                     <div class="map-icon">🗺️</div>
-                    <div>Interactive walking maps with GPS tracking coming soon!</div>
-                    <div style="margin-top: 10px; font-size: 0.8rem;">Google Maps integration with route optimization</div>
+                    <div>Interactive walking maps with GPS tracking</div>
+                    <div style="margin-top: 10px; font-size: 0.8rem;">
+                        <button class="action-btn" onclick="enableGPS()" style="margin-top: 10px;">Enable GPS Tracking</button>
+                    </div>
                 </div>
+                <div id="google-map" style="width: 100%; height: 400px; border-radius: 12px; display: none;"></div>
             </div>
         </div>
 
@@ -1205,53 +1173,85 @@
         ];
 
         let currentFactIndex = 0;
+        let scheduleOptimizationActive = false;
+
+        // Simple Button Functions (working versions)
+        function handleImHere() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = "✅ Checked In!";
+            button.style.background = "var(--success-green)";
+            
+            setTimeout(() => {
+                alert("📍 Great! You're at Times Square\n\n📸 Best photo spots nearby:\n• Red Steps at TKTS Booth\n• Corner of 7th & Broadway\n• Naked Cowboy area\n\n💡 Pro tip: Nathan's Famous is 2 blocks away!");
+            }, 500);
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = "var(--knicks-orange)";
+            }, 3000);
+            
+            console.log("User checked in at Times Square at", new Date().toLocaleTimeString());
+        }
+
+        function handleNextStop() {
+            const nextLocation = "Madison Square Garden";
+            const options = `🗺️ Next Stop: ${nextLocation}\n\n🚶 7 min walk (0.4 miles)\n🚇 4 min subway (Line 4/5/6)\n🚗 12 min drive (traffic dependent)\n\nRecommended: Walk - nice weather and close distance!`;
+            
+            if (confirm(options + "\n\nOpen directions?")) {
+                window.open(`https://www.google.com/maps/dir/Times+Square,+New+York,+NY/${nextLocation},+New+York,+NY`, '_blank');
+            }
+            
+            console.log("User requested directions to", nextLocation);
+        }
+
+        function handleSkip() {
+            if (confirm("⏭️ Skip Times Square?\n\nThis will add 40 minutes to your Empire State Building visit.\n\nProceed?")) {
+                alert("✨ Schedule optimized!\n\n⏰ +40 minutes added to Empire State Building\n📸 Perfect timing for sunset photos!");
+                console.log("User skipped Times Square - schedule adjusted");
+            }
+        }
 
         // Mobile Navigation
         function switchTab(tabName) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Remove active class from all nav tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Show selected tab content
             document.getElementById(tabName + '-tab').classList.add('active');
-            
-            // Add active class to selected nav tab
             event.target.closest('.nav-tab').classList.add('active');
         }
 
         // Day Navigation for Desktop
         function jumpToDay(dayIndex) {
-            // Update active nav button
             document.querySelectorAll('.day-nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.querySelectorAll('.day-nav-btn')[dayIndex].classList.add('active');
             
-            // Switch to schedule tab if on mobile
             if (window.innerWidth < 1024) {
                 switchTab('schedule');
             }
             
-            // Expand the selected day card
-            expandDayCard(dayIndex);
+            toggleDayCard(dayIndex);
         }
 
-        // Day Card Expansion
-        function expandDayCard(dayIndex) {
+        // Day Card Toggle
+        function toggleDayCard(dayIndex) {
             const cards = document.querySelectorAll('.day-card');
-            cards.forEach((card, index) => {
-                if (index === dayIndex) {
-                    card.classList.add('expanded');
-                } else {
-                    card.classList.remove('expanded');
-                }
-            });
+            const targetCard = cards[dayIndex];
+            
+            if (targetCard.classList.contains('expanded')) {
+                targetCard.classList.remove('expanded');
+            } else {
+                cards.forEach(card => card.classList.remove('expanded'));
+                targetCard.classList.add('expanded');
+            }
         }
 
         // NYC Facts Rotator
@@ -1266,7 +1266,6 @@
         // Image modal for activity photos
         function openImageModal(activityName) {
             if (activityImages[activityName]) {
-                // Create simple modal or lightbox effect
                 const modal = document.createElement('div');
                 modal.style.cssText = `
                     position: fixed;
@@ -1296,7 +1295,6 @@
                 
                 modal.onclick = () => document.body.removeChild(modal);
                 
-                // Auto-close after 3 seconds
                 setTimeout(() => {
                     if (document.body.contains(modal)) {
                         document.body.removeChild(modal);
@@ -1305,61 +1303,136 @@
             }
         }
 
+        // GPS Functions
+        let userLocation = null;
+        let watchId = null;
+
+        function enableGPS() {
+            if (!navigator.geolocation) {
+                alert("❌ GPS not supported on this device");
+                return;
+            }
+            
+            const button = event.target;
+            button.innerHTML = "🔄 Enabling GPS...";
+            button.disabled = true;
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    
+                    document.getElementById('map-placeholder').style.display = 'none';
+                    document.getElementById('google-map').style.display = 'block';
+                    
+                    initializeMap();
+                    watchId = navigator.geolocation.watchPosition(updateUserLocation);
+                    
+                    console.log("GPS enabled at:", userLocation);
+                },
+                function(error) {
+                    button.innerHTML = "Enable GPS Tracking";
+                    button.disabled = false;
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("❌ GPS access denied. Please enable location services.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("❌ GPS location unavailable.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("❌ GPS request timed out.");
+                            break;
+                    }
+                }
+            );
+        }
+
+        function initializeMap() {
+            const mapDiv = document.getElementById('google-map');
+            mapDiv.innerHTML = `
+                <div style="padding: 20px; text-align: center; color: #666; background: #f0f0f0; border-radius: 12px; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📍</div>
+                    <div style="font-weight: bold; margin-bottom: 5px;">GPS Location Detected!</div>
+                    <div style="font-size: 0.9rem;">Lat: ${userLocation.lat.toFixed(6)}</div>
+                    <div style="font-size: 0.9rem;">Lng: ${userLocation.lng.toFixed(6)}</div>
+                    <div style="margin-top: 15px; font-size: 0.8rem; color: #999;">
+                        Add Google Maps API key to see interactive map
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateUserLocation(position) {
+            userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            
+            const locationStatus = document.querySelector('.location-status span');
+            if (locationStatus) {
+                locationStatus.textContent = `Live GPS tracking • Accuracy: ${Math.round(position.coords.accuracy)}m`;
+            }
+            
+            console.log("Location updated:", userLocation);
+        }
+
         // Render Schedule Tab
         function renderSchedule() {
             const container = document.querySelector('.day-cards');
             
-            container.innerHTML = itineraryData.map((day, dayIndex) => `
-                <div class="day-card ${dayIndex === 4 ? 'current' : ''}" onclick="expandDayCard(${dayIndex})">
-                    <div class="day-card-header">
-                        <div class="day-card-date">${day.date}</div>
-                        <div class="day-card-summary">${day.summary}</div>
-                        <div class="day-card-toggle">▼</div>
-                    </div>
-                    <div class="day-card-content">
-                        <div class="activity-list">
-                            ${day.activities.filter(activity => !activity.time.includes('Travel')).map(activity => {
-                                const hasImage = activityImages[activity.activity];
-                                
-                                return `
-                                <div class="activity-item">
-                                    <div class="activity-time">${activity.time}</div>
-                                    <div class="activity-main">
-                                        <div class="activity-details">
-                                            <div class="activity-name">${activity.activity}</div>
-                                            <div class="activity-desc">${activity.description}</div>
-                                        </div>
-                                        ${hasImage ? `
-                                            <div class="activity-image-card" onclick="openImageModal('${activity.activity}')">
-                                                <img class="activity-image" src="${activityImages[activity.activity]}" alt="${activity.activity}">
-                                            </div>
-                                        ` : `
-                                            <div class="activity-icon-card">
-                                                🎯
-                                            </div>
-                                        `}
-                                    </div>
+            const daysHTML = itineraryData.map((day, dayIndex) => {
+                const activitiesHTML = day.activities.filter(activity => !activity.time.includes('Travel')).map(activity => {
+                    const hasImage = activityImages[activity.activity];
+                    
+                    return `
+                        <div class="activity-item">
+                            <div class="activity-time">${activity.time}</div>
+                            <div class="activity-main">
+                                <div class="activity-details">
+                                    <div class="activity-name">${activity.activity}</div>
+                                    <div class="activity-desc">${activity.description}</div>
                                 </div>
-                            `;
-                            }).join('')}
+                                ${hasImage ? `
+                                    <div class="activity-image-card" onclick="openImageModal('${activity.activity}')">
+                                        <img class="activity-image" src="${activityImages[activity.activity]}" alt="${activity.activity}">
+                                    </div>
+                                ` : `
+                                    <div class="activity-icon-card">
+                                        🎯
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                return `
+                    <div class="day-card ${dayIndex === 4 ? 'current' : ''}">
+                        <div class="day-card-header" onclick="toggleDayCard(${dayIndex})">
+                            <div class="day-card-date">${day.date}</div>
+                            <div class="day-card-summary">${day.summary}</div>
+                            <div class="day-card-toggle">▼</div>
+                        </div>
+                        <div class="day-card-content">
+                            <div class="activity-list">
+                                ${activitiesHTML}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            
+            container.innerHTML = daysHTML;
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             renderSchedule();
-            
-            // Auto-rotate facts every 30 seconds
-            setInterval(rotateFact, 30000);
-            
-            // Simulate location updates
-            setTimeout(() => {
-                // Could integrate real GPS here
-                console.log('Location updated: Times Square, Manhattan');
-            }, 2000);
+            console.log('NYC Trip Dashboard loaded successfully');
         });
 
         // Handle orientation change on mobile
