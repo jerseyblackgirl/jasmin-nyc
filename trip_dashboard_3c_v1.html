@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NYC Trip Dashboard - Mobile First</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZjbGu73gpGGTcozp9Ub8hCi2dBx8fWXs&libraries=geometry&callback=initGoogleMaps"></script>
     <style>
         * {
             margin: 0;
@@ -584,7 +585,7 @@
             line-height: 1.4;
         }
         
-        /* MAP TAB - Placeholder for Google Maps */
+        /* MAP TAB - Ready for Google Maps */
         .map-container {
             padding: 15px;
         }
@@ -868,7 +869,7 @@
             <div class="map-container">
                 <div class="map-placeholder" id="map-placeholder">
                     <div class="map-icon">🗺️</div>
-                    <div>Interactive walking maps with GPS tracking</div>
+                    <div>Ready for Google Maps integration!</div>
                     <div style="margin-top: 10px; font-size: 0.8rem;">
                         <button class="action-btn" onclick="enableGPS()" style="margin-top: 10px;">Enable GPS Tracking</button>
                     </div>
@@ -1173,9 +1174,20 @@
         ];
 
         let currentFactIndex = 0;
-        let scheduleOptimizationActive = false;
 
-        // Simple Button Functions (working versions)
+        // Google Maps variables
+        let map = null;
+        let userMarker = null;
+        let directionsService = null;
+        let directionsRenderer = null;
+
+        // Global initialization function for Google Maps
+        function initGoogleMaps() {
+            console.log("Google Maps API loaded successfully!");
+            // Map will be initialized when GPS is enabled
+        }
+
+        // Simple Button Functions
         function handleImHere() {
             const button = event.target;
             const originalText = button.innerHTML;
@@ -1254,7 +1266,7 @@
             }
         }
 
-        // NYC Facts Rotator
+        // NYC Facts Rotator (manual only)
         function rotateFact() {
             currentFactIndex = (currentFactIndex + 1) % nycFacts.length;
             const fact = nycFacts[currentFactIndex];
@@ -1303,7 +1315,7 @@
             }
         }
 
-        // GPS Functions
+        // GPS Functions - Ready for enhancement
         let userLocation = null;
         let watchId = null;
 
@@ -1327,9 +1339,10 @@
                     document.getElementById('map-placeholder').style.display = 'none';
                     document.getElementById('google-map').style.display = 'block';
                     
+                    // This is where you'll add Google Maps API
                     initializeMap();
-                    watchId = navigator.geolocation.watchPosition(updateUserLocation);
                     
+                    watchId = navigator.geolocation.watchPosition(updateUserLocation);
                     console.log("GPS enabled at:", userLocation);
                 },
                 function(error) {
@@ -1353,17 +1366,116 @@
 
         function initializeMap() {
             const mapDiv = document.getElementById('google-map');
-            mapDiv.innerHTML = `
-                <div style="padding: 20px; text-align: center; color: #666; background: #f0f0f0; border-radius: 12px; height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📍</div>
-                    <div style="font-weight: bold; margin-bottom: 5px;">GPS Location Detected!</div>
-                    <div style="font-size: 0.9rem;">Lat: ${userLocation.lat.toFixed(6)}</div>
-                    <div style="font-size: 0.9rem;">Lng: ${userLocation.lng.toFixed(6)}</div>
-                    <div style="margin-top: 15px; font-size: 0.8rem; color: #999;">
-                        Add Google Maps API key to see interactive map
-                    </div>
-                </div>
-            `;
+            
+            // Create map centered on NYC
+            map = new google.maps.Map(mapDiv, {
+                zoom: 13,
+                center: { lat: 40.7589, lng: -73.9851 }, // Times Square
+                styles: [
+                    // Custom styling for better look
+                    {
+                        "featureType": "poi",
+                        "elementType": "labels",
+                        "stylers": [{"visibility": "simplified"}]
+                    }
+                ]
+            });
+            
+            // Initialize directions
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: false,
+                polylineOptions: {
+                    strokeColor: "#F58426", // Knicks orange
+                    strokeWeight: 4
+                }
+            });
+            directionsRenderer.setMap(map);
+            
+            // Add user location marker
+            if (userLocation) {
+                addUserMarker();
+                map.setCenter(userLocation);
+            }
+            
+            // Add activity markers
+            addActivityMarkers();
+        }
+
+        function addUserMarker() {
+            if (userMarker) userMarker.setMap(null); // Remove old marker
+            
+            userMarker = new google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: "You are here",
+                icon: {
+                    url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                            <circle cx="10" cy="10" r="8" fill="#10b981" stroke="#fff" stroke-width="2"/>
+                            <circle cx="10" cy="10" r="3" fill="#fff"/>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(20, 20)
+                }
+            });
+        }
+
+        function addActivityMarkers() {
+            const todayActivities = [
+                { name: "Times Square", lat: 40.7589, lng: -73.9851 },
+                { name: "Madison Square Garden", lat: 40.7505, lng: -73.9934 },
+                { name: "Empire State Building", lat: 40.7484, lng: -73.9857 },
+                { name: "Central Park", lat: 40.7829, lng: -73.9654 }
+            ];
+            
+            todayActivities.forEach((activity, index) => {
+                const marker = new google.maps.Marker({
+                    position: { lat: activity.lat, lng: activity.lng },
+                    map: map,
+                    title: activity.name,
+                    label: {
+                        text: (index + 1).toString(),
+                        color: "white",
+                        fontWeight: "bold"
+                    },
+                    icon: {
+                        url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+                                <circle cx="15" cy="15" r="12" fill="#006BB6" stroke="#fff" stroke-width="2"/>
+                            </svg>
+                        `),
+                        scaledSize: new google.maps.Size(30, 30)
+                    }
+                });
+                
+                // Add click event for marker
+                marker.addListener('click', () => {
+                    showDirectionsToActivity(activity);
+                });
+            });
+        }
+
+        function showDirectionsToActivity(activity) {
+            if (!userLocation) {
+                alert("Enable GPS to get directions!");
+                return;
+            }
+            
+            directionsService.route({
+                origin: userLocation,
+                destination: { lat: activity.lat, lng: activity.lng },
+                travelMode: google.maps.TravelMode.WALKING,
+            }, (result, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(result);
+                    
+                    const route = result.routes[0].legs[0];
+                    alert(`🚶 Walking to ${activity.name}\n\n📍 Distance: ${route.distance.text}\n⏰ Time: ${route.duration.text}`);
+                } else {
+                    alert("Could not calculate directions: " + status);
+                }
+            });
         }
 
         function updateUserLocation(position) {
@@ -1372,12 +1484,54 @@
                 lng: position.coords.longitude
             };
             
+            // Update location status in header
             const locationStatus = document.querySelector('.location-status span');
             if (locationStatus) {
                 locationStatus.textContent = `Live GPS tracking • Accuracy: ${Math.round(position.coords.accuracy)}m`;
             }
             
+            // Update user marker on map if map is initialized
+            if (map && userMarker) {
+                userMarker.setPosition(userLocation);
+                
+                // Check if user is near any activities
+                checkProximityToActivities();
+            }
+            
             console.log("Location updated:", userLocation);
+        }
+
+        function checkProximityToActivities() {
+            const todayActivities = [
+                { name: "Times Square", lat: 40.7589, lng: -73.9851 },
+                { name: "Madison Square Garden", lat: 40.7505, lng: -73.9934 },
+                { name: "Empire State Building", lat: 40.7484, lng: -73.9857 },
+                { name: "Central Park", lat: 40.7829, lng: -73.9654 }
+            ];
+            
+            todayActivities.forEach(activity => {
+                const distance = calculateDistance(
+                    userLocation.lat, userLocation.lng,
+                    activity.lat, activity.lng
+                );
+                
+                // If within 100 meters (0.1 km), show notification
+                if (distance < 0.1) {
+                    console.log(`Near ${activity.name}! Distance: ${(distance * 1000).toFixed(0)}m`);
+                    // You could show a notification here
+                }
+            });
+        }
+
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; // Distance in kilometers
         }
 
         // Render Schedule Tab
@@ -1432,14 +1586,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             renderSchedule();
-            console.log('NYC Trip Dashboard loaded successfully');
-        });
-
-        // Handle orientation change on mobile
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                // Refresh layout if needed
-            }, 100);
+            console.log('NYC Trip Dashboard loaded - ready for GPS API integration!');
         });
     </script>
 </body>
