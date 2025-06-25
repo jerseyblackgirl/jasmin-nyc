@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYC Trip Dashboard - Three Column Layout</title>
+    <title>NYC Trip Dashboard - Mobile First</title>
     <style>
         * {
             margin: 0;
@@ -11,85 +11,39 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --knicks-blue: #006BB6;
+            --knicks-orange: #F58426;
+            --knicks-silver: #BEC0C2;
+            --dark-bg: #1e293b;
+            --darker-bg: #0f172a;
+            --light-bg: #f8f9fa;
+            --text-dark: #2c2c2c;
+            --text-light: #ffffff;
+            --border-color: #e5e7eb;
+            --success-green: #10b981;
+            --warning-yellow: #f59e0b;
+        }
+        
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background: #f8f9fa;
-            color: #2c2c2c;
+            font-family: 'Inter', 'SF Pro Display', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
             line-height: 1.6;
+            overflow-x: hidden;
+            font-weight: 400;
         }
+
+        /* === MOBILE FIRST DESIGN === */
         
-        .dashboard {
-            display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            height: 100vh;
-            gap: 1px;
-            background: #e9ecef;
-        }
-        
-        .left-sidebar {
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            padding: 20px;
-            overflow-y: auto;
-            color: white;
-        }
-        
-        .main-content {
-            background: #f8f9fa;
-            overflow-y: auto;
-            padding: 40px 20px;
-        }
-        
-        .right-sidebar {
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            padding: 20px;
-            overflow-y: auto;
-            color: white;
-        }
-        
-        .sidebar-section {
-            margin-bottom: 25px;
-        }
-        
-        .sidebar-title {
-            color: #F58426;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #F58426;
-        }
-        
-        .sidebar-content {
-            color: #BEC0C2;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        .placeholder-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border-left: 3px solid #006BB6;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
+        /* Header - Simplified for mobile */
         .header {
-            text-align: center;
-            margin-bottom: 50px;
-            background: linear-gradient(135deg, #006BB6 0%, #0056a3 50%, #004489 100%);
-            padding: 60px 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, var(--knicks-blue) 0%, #0056a3 50%, #004489 100%);
+            padding: 20px 15px;
             color: white;
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
         
         .header::before {
@@ -100,7 +54,7 @@
             right: 0;
             bottom: 0;
             background: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1600&h=900&fit=crop') center/cover;
-            opacity: 0.2;
+            opacity: 0.15;
             z-index: 0;
         }
         
@@ -110,218 +64,466 @@
         }
         
         .header h1 {
-            font-size: 4rem;
-            font-style: italic;
-            color: white;
-            margin-bottom: 20px;
-            font-weight: 300;
-            letter-spacing: 3px;
+            font-size: 2.5rem;
+            font-style: normal;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -1px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
         }
         
         .header h2 {
-            font-size: 1.8rem;
-            color: #F58426;
-            margin-bottom: 25px;
-            font-weight: 400;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 1.2rem;
+            color: var(--knicks-orange);
+            margin-bottom: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
         
-        .header-description {
-            font-size: 1.1rem;
-            color: #BEC0C2;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto 35px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-        
-        .trip-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 30px;
-            text-align: left;
+        .trip-status {
             background: rgba(255,255,255,0.1);
-            padding: 25px;
+            padding: 15px;
             border-radius: 8px;
             backdrop-filter: blur(10px);
+            margin-top: 15px;
         }
         
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .detail-label {
+        .current-day-indicator {
+            font-size: 1.1rem;
             font-weight: bold;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: white;
-        }
-        
-        .detail-value {
-            font-size: 1rem;
-            color: #BEC0C2;
-        }
-        
-        .itinerary {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-        }
-        
-        .day-accordion {
-            border-bottom: 1px solid #e5e5e5;
-        }
-        
-        .day-accordion:last-child {
-            border-bottom: none;
-        }
-        
-        .day-header {
-            padding: 25px 30px;
-            background: #f8f9fa;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-left: 4px solid #BEC0C2;
-        }
-        
-        .day-header:hover {
-            background: #e9ecef;
-            border-left-color: #F58426;
-        }
-        
-        .day-header.active {
-            background: #e9ecef;
-            border-left-color: #006BB6;
-        }
-        
-        .day-info {
-            flex: 1;
-        }
-        
-        .day-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #006BB6;
+            color: var(--knicks-orange);
             margin-bottom: 5px;
         }
         
-        .day-summary {
-            color: #666;
+        .trip-progress {
+            background: rgba(0,0,0,0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--knicks-orange), var(--warning-yellow));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 37.5%; /* Day 3 of 8 */
+        }
+        
+        .location-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--knicks-silver);
+        }
+        
+        .location-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-green);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* Mobile Navigation Tabs */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--dark-bg);
+            border-top: 3px solid var(--knicks-orange);
+            z-index: 1000;
+            display: flex;
+            padding: 5px 0 20px 0; /* Account for iOS safe area */
+        }
+        
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            color: var(--knicks-silver);
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        
+        .nav-tab.active {
+            color: var(--knicks-orange);
+            background: rgba(245, 132, 38, 0.1);
+        }
+        
+        .nav-tab .icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        
+        /* Content Areas */
+        .content-container {
+            padding-bottom: 100px; /* Space for fixed nav */
+            min-height: 100vh;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 15px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* TODAY TAB - Most Important */
+        .today-content {
+            background: white;
+            border-radius: 12px;
+            margin: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .today-header {
+            background: linear-gradient(135deg, var(--knicks-blue), #0056a3);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .today-date {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .today-summary {
+            color: var(--knicks-silver);
             font-size: 0.95rem;
         }
         
-        .day-toggle {
-            font-size: 1.5rem;
-            color: #F58426;
+        .current-activity {
+            background: linear-gradient(135deg, rgba(245, 132, 38, 0.1), rgba(245, 132, 38, 0.05));
+            border-left: 4px solid var(--knicks-orange);
+            padding: 20px;
+            margin: 15px;
+            border-radius: 8px;
+        }
+        
+        .activity-now {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--knicks-orange);
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .activity-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        
+        .activity-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: var(--knicks-blue);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .action-btn:hover {
+            background: #0056a3;
+            transform: translateY(-1px);
+        }
+        
+        .action-btn.secondary {
+            background: var(--knicks-silver);
+            color: var(--text-dark);
+        }
+        
+        .action-btn.orange {
+            background: var(--knicks-orange);
+        }
+        
+        .next-activities {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--knicks-blue);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .next-activity {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--knicks-silver);
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .next-activity-details {
+            flex: 1;
+        }
+        
+        .next-time {
+            font-size: 0.9rem;
+            color: var(--knicks-orange);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .next-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .next-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .next-activity-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
             transition: transform 0.3s ease;
         }
         
-        .day-header.active .day-toggle {
-            transform: rotate(180deg);
+        .next-activity-image:hover {
+            transform: scale(1.05);
         }
         
-        .day-content {
+        .next-activity-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .next-activity-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--knicks-blue), #0056a3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        /* SCHEDULE TAB */
+        .day-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        .day-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .day-card.current {
+            border: 2px solid var(--knicks-orange);
+            box-shadow: 0 4px 20px rgba(245, 132, 38, 0.2);
+        }
+        
+        .day-card-header {
+            background: linear-gradient(135deg, var(--dark-bg), #334155);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .day-card.current .day-card-header {
+            background: linear-gradient(135deg, var(--knicks-blue), #0056a3);
+        }
+        
+        .day-card-date {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .day-card-summary {
+            color: var(--knicks-silver);
+            font-size: 0.9rem;
+        }
+        
+        .day-card-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--knicks-orange);
+            transition: transform 0.3s ease;
+        }
+        
+        .day-card.expanded .day-card-toggle {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        .day-card-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            background: white;
+            transition: max-height 0.4s ease;
         }
         
-        .day-content.active {
-            max-height: 2000px;
+        .day-card.expanded .day-card-content {
+            max-height: 1000px;
         }
         
-        .day-activities {
+        .activity-list {
             padding: 0;
         }
         
-        .time-block {
-            padding: 15px 30px;
-            border-bottom: 1px solid #e9ecef;
-            background: #ffffff;
-        }
-        
-        .time-block:last-child {
-            border-bottom: none;
-        }
-        
-        .time-section-header {
-            font-weight: bold;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #006BB6;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #F58426;
-        }
-        
         .activity-item {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 20px;
-            align-items: start;
-            padding: 15px 0;
-            border-bottom: 1px solid #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
         }
         
         .activity-item:last-child {
             border-bottom: none;
         }
         
-        .activity-item.featured {
-            background: linear-gradient(135deg, rgba(245, 132, 38, 0.1), rgba(245, 132, 38, 0.05));
-            border-left: 4px solid #F58426;
-            padding-left: 16px;
-            margin-left: -20px;
-            border-radius: 0 6px 6px 0;
-        }
-        
         .activity-time {
+            font-size: 0.85rem;
+            color: var(--knicks-blue);
             font-weight: bold;
-            color: #006BB6;
-            font-size: 0.9rem;
-            padding-top: 5px;
+            min-width: 70px;
+            padding-top: 2px;
+            flex-shrink: 0;
         }
         
-        .activity-item.travel-item .activity-content {
-            gap: 0;
-        }
-        
-        .activity-item.travel-item .activity-details {
-            margin-left: 0;
-        }
-        
-        .activity-content {
+        .activity-main {
+            flex: 1;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: flex-start;
         }
         
-        .activity-visual {
-            width: 80px;
-            height: 80px;
-            border-radius: 6px;
-            overflow: hidden;
-            flex-shrink: 0;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+        .activity-details {
+            flex: 1;
         }
         
-        .activity-visual:hover {
+        .activity-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+        
+        .activity-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        
+        .day-card-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .today-date {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--knicks-blue);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--knicks-blue);
+        }
+        
+        .activity-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .activity-image-card {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .activity-image-card:hover {
             transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         
         .activity-image {
@@ -330,339 +532,499 @@
             object-fit: cover;
         }
         
-        .activity-icon {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            background: linear-gradient(135deg, #006BB6, #004489);
-            color: white;
-        }
-        
-        .activity-details {
-            flex: 1;
-        }
-        
-        .activity-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #000000;
-            margin-bottom: 8px;
-        }
-        
-        .activity-description {
-            color: #666;
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        
-        .activity-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        
-        .tag {
-            background: #e9ecef;
-            color: #006BB6;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .cost-info {
-            background: rgba(245, 132, 38, 0.1);
-            color: #F58426;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin-top: 8px;
-            font-weight: 500;
-            border: 1px solid rgba(245, 132, 38, 0.3);
-        }
-        
-        .gallery-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .gallery-modal.active {
-            display: flex;
-        }
-        
-        .gallery-content {
-            max-width: 80%;
-            max-height: 80%;
-            position: relative;
-        }
-        
-        .gallery-image {
-            width: 100%;
-            height: auto;
+        .activity-icon-card {
+            width: 80px;
+            height: 80px;
             border-radius: 8px;
-        }
-        
-        .gallery-close {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            background: none;
-            border: none;
-            color: white;
+            background: linear-gradient(135deg, var(--knicks-blue), #0056a3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 2rem;
-            cursor: pointer;
-        }
-        
-        .gallery-description {
             color: white;
+            flex-shrink: 0;
+        }
+        
+        /* TIPS TAB */
+        .tips-content {
+            padding: 15px;
+        }
+        
+        .fact-rotator {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             text-align: center;
-            margin-top: 15px;
-            font-style: italic;
         }
         
-        @media (max-width: 1200px) {
-            .dashboard {
-                grid-template-columns: 250px 1fr 250px;
+        .fact-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--knicks-orange);
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .fact-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        
+        .fact-refresh {
+            background: var(--knicks-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        
+        .fact-refresh:hover {
+            background: #0056a3;
+        }
+        
+        .tips-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .tip-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .tip-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--knicks-blue);
+        }
+        
+        .tip-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        /* MAP TAB - Placeholder for Google Maps */
+        .map-container {
+            padding: 15px;
+        }
+        
+        .map-placeholder {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .map-icon {
+            font-size: 3rem;
+            color: var(--knicks-silver);
+            margin-bottom: 15px;
+        }
+        
+        /* === DESKTOP RESPONSIVE === */
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 3.5rem;
+                letter-spacing: -2px;
             }
             
-            .header h1 {
-                font-size: 3rem;
+            .header h2 {
+                font-size: 1.6rem;
+            }
+            
+            .mobile-nav {
+                display: none;
+            }
+            
+            .content-container {
+                padding-bottom: 0;
+            }
+            
+            .tab-content {
+                display: block;
+                padding: 20px;
+            }
+            
+            .tips-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
-        @media (max-width: 900px) {
-            .dashboard {
+        @media (min-width: 1024px) {
+            body {
+                display: grid;
+                grid-template-columns: 300px 1fr 300px;
+                height: 100vh;
+            }
+            
+            .header {
+                grid-column: 1 / -1;
+                height: auto;
+                padding: 40px 20px;
+            }
+            
+            .content-container {
+                grid-column: 2;
+                overflow-y: auto;
+                padding: 40px 20px;
+                background: var(--light-bg);
+            }
+            
+            .desktop-sidebar {
+                display: block;
+                background: linear-gradient(180deg, var(--dark-bg) 0%, #334155 100%);
+                color: white;
+                padding: 20px;
+                overflow-y: auto;
+            }
+            
+            .desktop-sidebar.left {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            .desktop-sidebar.right {
+                grid-column: 3;
+                grid-row: 2;
+            }
+            
+            .sidebar-section {
+                margin-bottom: 25px;
+            }
+            
+            .sidebar-title {
+                color: var(--knicks-orange);
+                font-size: 1.1rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid var(--knicks-orange);
+            }
+            
+            .day-navigation {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .day-nav-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: none;
+                color: var(--knicks-silver);
+                padding: 12px 15px;
+                border-radius: 6px;
+                text-align: left;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-left: 3px solid transparent;
+                font-size: 0.9rem;
+            }
+            
+            .day-nav-btn:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-left-color: var(--knicks-orange);
+                color: white;
+            }
+            
+            .day-nav-btn.active {
+                background: rgba(245, 132, 38, 0.2);
+                border-left-color: var(--knicks-orange);
+                color: var(--knicks-orange);
+                font-weight: bold;
+            }
+            
+            .tips-grid {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
-                height: auto;
             }
             
-            .left-sidebar, .right-sidebar {
-                height: auto;
-                max-height: 200px;
-                position: relative;
+            .activity-image-card {
+                width: 100px;
+                height: 100px;
             }
             
-            .header h1 {
+            .activity-icon-card {
+                width: 100px;
+                height: 100px;
                 font-size: 2.5rem;
             }
-            
-            .trip-details {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .activity-item {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .activity-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .activity-visual {
-                width: 100%;
-                height: 200px;
-            }
+        }
+        
+        /* Hide desktop sidebars on mobile */
+        .desktop-sidebar {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="left-sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-title">Day Navigation</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">Saturday 7/12 - Arrival Day</div>
-                    <div class="placeholder-item">Sunday 7/13 - Yankees Game</div>
-                    <div class="placeholder-item">Monday 7/14 - Bronx Zoo</div>
-                    <div class="placeholder-item">Tuesday 7/15 - Rutgers Tour</div>
-                    <div class="placeholder-item">Wednesday 7/16 - Manhattan</div>
-                    <div class="placeholder-item">Thursday 7/17 - Brooklyn</div>
-                    <div class="placeholder-item">Friday 7/18 - American Dream</div>
-                    <div class="placeholder-item">Saturday 7/19 - Departure</div>
-                </div>
+    <div class="header">
+        <h1>New York City</h1>
+        <h2>8-Day Family Adventure</h2>
+        
+        <div class="trip-status">
+            <div class="current-day-indicator">Day 3 of 8 - Wednesday, July 16</div>
+            <div class="trip-progress">
+                <div class="progress-bar"></div>
             </div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-title">Weather</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">Current: 72°F Sunny</div>
-                    <div class="placeholder-item">Tomorrow: 75°F Partly Cloudy</div>
-                    <div class="placeholder-item">Weekend: 68°F Light Rain</div>
-                </div>
+            <div class="location-status">
+                <div class="location-indicator"></div>
+                <span>Location tracking active • Manhattan</span>
             </div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-title">Quick Actions</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">Navigate to Current Day</div>
-                    <div class="placeholder-item">Check Traffic Updates</div>
-                    <div class="placeholder-item">View Photo Gallery</div>
-                </div>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebars -->
+    <div class="desktop-sidebar left">
+        <div class="sidebar-section">
+            <div class="sidebar-title">Day Navigation</div>
+            <div class="day-navigation">
+                <button class="day-nav-btn" onclick="jumpToDay(0)">Sat 7/12 - Arrival</button>
+                <button class="day-nav-btn" onclick="jumpToDay(1)">Sun 7/13 - Yankees</button>
+                <button class="day-nav-btn active" onclick="jumpToDay(2)">Mon 7/14 - Bronx Zoo</button>
+                <button class="day-nav-btn" onclick="jumpToDay(3)">Tue 7/15 - Rutgers</button>
+                <button class="day-nav-btn" onclick="jumpToDay(4)">Wed 7/16 - Manhattan</button>
+                <button class="day-nav-btn" onclick="jumpToDay(5)">Thu 7/17 - Brooklyn</button>
+                <button class="day-nav-btn" onclick="jumpToDay(6)">Fri 7/18 - Mall</button>
+                <button class="day-nav-btn" onclick="jumpToDay(7)">Sat 7/19 - Departure</button>
             </div>
         </div>
         
-        <div class="main-content">
-            <div class="container">
-                <div class="header">
-                    <h1>New York City</h1>
-                    <h2>8-Day Family Adventure</h2>
-                    <div class="header-description">
-                        Experience the ultimate NYC journey from the electric atmosphere of Yankee Stadium to the wonder of the Bronx Zoo, iconic Manhattan landmarks, and the classic charm of Coney Island. Eight unforgettable days of culture, cuisine, and city exploration await.
-                    </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Smart Suggestions</div>
+            <div class="tip-card">
+                <div class="tip-title">🎯 Perfect timing!</div>
+                <div class="tip-description">You're ahead of schedule - great time to explore the Conservatory Garden</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <!-- TODAY TAB -->
+        <div class="tab-content active" id="today-tab">
+            <div class="today-content">
+                <div class="today-header">
+                    <div class="today-date">Wednesday, July 16</div>
+                    <div class="today-summary">Manhattan Exploration Day</div>
+                </div>
+                
+                <div class="current-activity">
+                    <div class="activity-now">HAPPENING NOW • 2:40 PM</div>
+                    <div class="activity-title">Times Square Experience</div>
+                    <div class="activity-description">You're in the heart of the Crossroads of the World! The electric energy of Broadway district surrounds you.</div>
                     
-                    <div class="trip-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Departure:</div>
-                            <div class="detail-value">July 12, 2025</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Return:</div>
-                            <div class="detail-value">July 19, 2025</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Base Location:</div>
-                            <div class="detail-value">New Brunswick, NJ</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Transportation:</div>
-                            <div class="detail-value">Car + PATH Train</div>
-                        </div>
+                    <div class="quick-actions">
+                        <button class="action-btn orange">📍 I'm Here</button>
+                        <button class="action-btn">🗺️ Next Stop</button>
+                        <button class="action-btn secondary">⏭️ Skip</button>
                     </div>
                 </div>
                 
-                <div class="itinerary" id="itinerary">
-                    <!-- Accordion content will be populated by JavaScript -->
+                <div class="next-activities">
+                    <div class="section-title">
+                        <span>⏰</span>
+                        Coming Up Next
+                    </div>
+                    
+                    <div class="next-activity">
+                        <div class="next-activity-details">
+                            <div class="next-time">4:20 PM</div>
+                            <div class="next-name">Madison Square Garden</div>
+                            <div class="next-desc">Quick visit to the World's Most Famous Arena</div>
+                        </div>
+                        <div class="next-activity-image" onclick="openImageModal('Madison Square Garden')">
+                            <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=400&fit=crop" alt="Madison Square Garden">
+                        </div>
+                    </div>
+                    
+                    <div class="next-activity">
+                        <div class="next-activity-details">
+                            <div class="next-time">5:00 PM</div>
+                            <div class="next-name">Empire State Building</div>
+                            <div class="next-desc">Observatory with breathtaking sunset views</div>
+                        </div>
+                        <div class="next-activity-image" onclick="openImageModal('Empire State Building')">
+                            <img src="https://images.unsplash.com/photo-1576840019990-c98b1bb1b1c4?w=400&h=400&fit=crop" alt="Empire State Building">
+                        </div>
+                    </div>
+                    
+                    <div class="next-activity">
+                        <div class="next-activity-details">
+                            <div class="next-time">7:45 PM</div>
+                            <div class="next-name">Central Park</div>
+                            <div class="next-desc">Evening stroll through the serene Conservatory Garden</div>
+                        </div>
+                        <div class="next-activity-image" onclick="openImageModal('Central Park')">
+                            <img src="https://images.unsplash.com/photo-1539650116574-75c0c6d90469?w=400&h=400&fit=crop" alt="Central Park">
+                        </div>
+                    </div>
+                    
+                    <div class="next-activity">
+                        <div class="next-activity-details">
+                            <div class="next-time">9:45 PM</div>
+                            <div class="next-name">Return Journey</div>
+                            <div class="next-desc">Subway → PATH → Drive to New Brunswick</div>
+                        </div>
+                        <div class="next-activity-icon">
+                            🚇
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- SCHEDULE TAB -->
+        <div class="tab-content" id="schedule-tab">
+            <div class="day-cards">
+                <!-- Day cards will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- MAP TAB -->
+        <div class="tab-content" id="map-tab">
+            <div class="map-container">
+                <div class="map-placeholder">
+                    <div class="map-icon">🗺️</div>
+                    <div>Interactive walking maps with GPS tracking coming soon!</div>
+                    <div style="margin-top: 10px; font-size: 0.8rem;">Google Maps integration with route optimization</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIPS TAB -->
+        <div class="tab-content" id="tips-tab">
+            <div class="tips-content">
+                <div class="fact-rotator">
+                    <div class="fact-category">NYC FOOD FACT</div>
+                    <div class="fact-text" id="current-fact">
+                        The NYC bagel's hole exists because vendors would string them on dowels to sell on the street!
+                    </div>
+                    <button class="fact-refresh" onclick="rotateFact()">New Fact ↻</button>
+                </div>
+                
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <div class="tip-icon">🚇</div>
+                        <div class="tip-title">Subway Smart</div>
+                        <div class="tip-description">Use the PATH train from Jersey City - it's faster and cheaper than driving into Manhattan!</div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <div class="tip-icon">📱</div>
+                        <div class="tip-title">Photo Pro Tip</div>
+                        <div class="tip-description">Golden hour shots at Empire State Building are magical - arrive 30 minutes before sunset!</div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <div class="tip-icon">🍕</div>
+                        <div class="tip-title">Local Eats</div>
+                        <div class="tip-description">Real New Yorkers fold their pizza slices. When in doubt, look for the longest line - it's usually worth it!</div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <div class="tip-icon">⚡</div>
+                        <div class="tip-title">Energy Saver</div>
+                        <div class="tip-description">Wear comfortable walking shoes and stay hydrated. NYC averages 10,000+ steps per day!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="desktop-sidebar right">
+        <div class="sidebar-section">
+            <div class="sidebar-title">Location Intelligence</div>
+            <div class="tip-card">
+                <div class="tip-title">📍 You're at Times Square</div>
+                <div class="tip-description">Next: Madison Square Garden (12 min walk)</div>
             </div>
         </div>
         
-        <div class="right-sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-title">Trip Overview</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">Total Days: 8</div>
-                    <div class="placeholder-item">Major Attractions: 12+</div>
-                    <div class="placeholder-item">Transport Budget: $102</div>
-                    <div class="placeholder-item">Estimated Miles: 350+</div>
-                </div>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-title">Cost Breakdown</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">NYC Tolls: $53</div>
-                    <div class="placeholder-item">Parking Fees: $49</div>
-                    <div class="placeholder-item">Gas Estimate: $75</div>
-                    <div class="placeholder-item">Transit Passes: $28</div>
-                </div>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-title">Travel Notes</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">Parking Base: 5 Spruce St, Jersey City</div>
-                    <div class="placeholder-item">PATH Route: Journal Square ↔ Manhattan</div>
-                    <div class="placeholder-item">Heavy Travel: Mon (Bronx) & Thu (Brooklyn)</div>
-                </div>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-title">Activity Highlights</div>
-                <div class="sidebar-content">
-                    <div class="placeholder-item">⚾ Yankees Game (7.5h)</div>
-                    <div class="placeholder-item">🦁 Bronx Zoo (6h)</div>
-                    <div class="placeholder-item">🗽 Manhattan Full Day</div>
-                    <div class="placeholder-item">🎢 Coney Island (4h)</div>
-                </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Trip Progress</div>
+            <div style="color: var(--knicks-silver); font-size: 0.9rem;">
+                <div style="margin-bottom: 10px;">✅ Yankees Game Complete</div>
+                <div style="margin-bottom: 10px;">✅ Bronx Zoo Complete</div>
+                <div style="margin-bottom: 10px;">🔄 Manhattan Day (In Progress)</div>
+                <div style="margin-bottom: 10px;">⏳ Brooklyn Adventure</div>
             </div>
         </div>
     </div>
 
-    <div class="gallery-modal" id="galleryModal">
-        <div class="gallery-content">
-            <button class="gallery-close" onclick="closeGallery()">×</button>
-            <img class="gallery-image" id="galleryImage" src="" alt="">
-            <div class="gallery-description" id="galleryDescription"></div>
-        </div>
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <button class="nav-tab active" onclick="switchTab('today')">
+            <div class="icon">🎯</div>
+            <div>Today</div>
+        </button>
+        <button class="nav-tab" onclick="switchTab('schedule')">
+            <div class="icon">📅</div>
+            <div>Schedule</div>
+        </button>
+        <button class="nav-tab" onclick="switchTab('map')">
+            <div class="icon">🗺️</div>
+            <div>Map</div>
+        </button>
+        <button class="nav-tab" onclick="switchTab('tips')">
+            <div class="icon">💡</div>
+            <div>Tips</div>
+        </button>
     </div>
 
     <script>
+        // Activity images for visual cards
         const activityImages = {
-            "Yankees Game Experience": {
-                url: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&h=600&fit=crop",
-                description: "Experience the electric atmosphere of America's pastime at the iconic Yankee Stadium"
-            },
-            "Bronx Zoo Visit": {
-                url: "https://images.unsplash.com/photo-1549480017-d76466d40b47?w=800&h=600&fit=crop",
-                description: "Get up close with over 4,000 animals across 265 acres of wildlife conservation"
-            },
-            "World Trade Center": {
-                url: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&h=600&fit=crop",
-                description: "Pay respects and witness the powerful memorial at Ground Zero"
-            },
-            "Times Square": {
-                url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop",
-                description: "Immerse yourself in the neon-lit heart of Manhattan"
-            },
-            "Empire State Building": {
-                url: "https://images.unsplash.com/photo-1576840019990-c98b1bb1b1c4?w=800&h=600&fit=crop",
-                description: "Soar above NYC with breathtaking 360° views from the iconic observatory"
-            },
-            "Central Park": {
-                url: "https://images.unsplash.com/photo-1539650116574-75c0c6d90469?w=800&h=600&fit=crop",
-                description: "Find tranquility in Manhattan's green oasis at the Conservatory Garden"
-            },
-            "Coney Island Experience": {
-                url: "https://images.unsplash.com/photo-1539650116574-75c0c6d90469?w=800&h=600&fit=crop",
-                description: "Relive classic Americana with carnival rides, boardwalks, and Nathan's hot dogs"
-            },
-            "American Dream Mall": {
-                url: "https://images.unsplash.com/photo-1567726375657-40abc9adecec?w=800&h=600&fit=crop",
-                description: "Shop, dine, and play at one of the largest malls in the Western Hemisphere"
-            }
+            "Rutgers College Tour": "https://images.unsplash.com/photo-1562774053-701939374585?w=400&h=400&fit=crop",
+            "Yankees Game Experience": "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=400&h=400&fit=crop",
+            "Bronx Zoo Visit": "https://images.unsplash.com/photo-1549480017-d76466d40b47?w=400&h=400&fit=crop",
+            "World Trade Center": "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=400&h=400&fit=crop",
+            "Times Square": "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=400&fit=crop",
+            "Empire State Building": "https://images.unsplash.com/photo-1576840019990-c98b1bb1b1c4?w=400&h=400&fit=crop",
+            "Central Park": "https://images.unsplash.com/photo-1539650116574-75c0c6d90469?w=400&h=400&fit=crop",
+            "Coney Island Experience": "https://images.unsplash.com/photo-1544737151364-6e4b99099233?w=400&h=400&fit=crop",
+            "American Dream Mall": "https://images.unsplash.com/photo-1567726375657-40abc9adecec?w=400&h=400&fit=crop",
+            "Prudential Center & Newark": "https://images.unsplash.com/photo-1470229538611-16a4609b99cc?w=400&h=400&fit=crop",
+            "Downtown Walking Tour": "https://images.unsplash.com/photo-1518391846015-55a9cc003b25?w=400&h=400&fit=crop",
+            "Fort Lee Park & GWB Views": "https://images.unsplash.com/photo-1518699205077-58e3b4048ac2?w=400&h=400&fit=crop",
+            "Barclays Center": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=400&fit=crop",
+            "Junior's Restaurant": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=400&fit=crop",
+            "Madison Square Garden": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=400&fit=crop"
         };
 
+        // Your original data structure
         const itineraryData = [
             {
                 date: "Saturday, July 12",
                 title: "Arrival Day",
                 summary: "Travel and hotel check-in",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "All Day",
-                        activities: [
-                            {
-                                time: "6:00 AM",
-                                activity: "Arrival from Atlanta",
-                                description: "Flight from ATL to Newark/JFK. Ground transportation to New Brunswick hotel.",
-                                icon: "✈️",
-                                tags: ["Travel", "Arrival"]
-                            },
-                            {
-                                time: "6:00 PM",
-                                activity: "Hotel Check-in & Rest",
-                                description: "Settle into accommodations, grab dinner nearby, and prepare for tomorrow's adventure.",
-                                icon: "🏨",
-                                tags: ["Rest", "Preparation"]
-                            }
-                        ]
+                        time: "6:00 AM",
+                        activity: "Arrival from Atlanta",
+                        description: "Flight from ATL to Newark/JFK. Ground transportation to New Brunswick hotel."
+                    },
+                    {
+                        time: "6:00 PM",
+                        activity: "Hotel Check-in & Rest",
+                        description: "Settle into accommodations, grab dinner nearby, and prepare for tomorrow's adventure."
                     }
                 ]
             },
@@ -670,55 +1032,21 @@
                 date: "Sunday, July 13",
                 title: "Yankees Game Day",
                 summary: "Baseball game and birthday celebration",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "7:00 AM - 9:00 AM",
-                                activity: "Travel to Yankee Stadium",
-                                description: "Drive to Jersey City (35 min) → Park at 5 Spruce St → PATH to Herald Square (35 min) → Subway to Yankee Stadium (40 min)",
-                                tags: ["Travel"]
-                            }
-                        ]
+                        time: "7:00 AM - 9:00 AM",
+                        activity: "Travel to Yankee Stadium",
+                        description: "Drive to Jersey City → Park at 5 Spruce St → PATH to Herald Square → Subway to Yankee Stadium"
                     },
                     {
-                        period: "Afternoon",
-                        activities: [
-                            {
-                                time: "9:00 AM",
-                                activity: "Yankees Game Experience",
-                                description: "Full game day experience at the legendary Yankee Stadium with stadium tour and authentic ballpark atmosphere.",
-                                icon: "⚾",
-                                tags: ["Baseball", "Stadium Tour", "Classic NYC"],
-                                featured: true
-                            }
-                        ]
+                        time: "9:00 AM",
+                        activity: "Yankees Game Experience",
+                        description: "Full game day experience at the legendary Yankee Stadium with stadium tour and authentic ballpark atmosphere."
                     },
                     {
-                        period: "Evening",
-                        activities: [
-                            {
-                                time: "4:30 PM - 6:30 PM",
-                                activity: "Return to New Brunswick",
-                                description: "Subway to Herald Square → PATH to Jersey City → Retrieve car → Drive to New Brunswick",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "7:30 PM",
-                                activity: "Birthday Celebration Dinner",
-                                description: "Special birthday dinner at a local restaurant in Metuchen, NJ, followed by family time.",
-                                icon: "🎂",
-                                tags: ["Birthday", "Celebration", "Family Time"]
-                            },
-                            {
-                                time: "9:30 PM",
-                                activity: "Free Evening",
-                                description: "Family time and relaxation after an amazing day",
-                                icon: "🏠",
-                                tags: ["Family Time", "Rest"]
-                            }
-                        ]
+                        time: "7:30 PM",
+                        activity: "Birthday Celebration Dinner",
+                        description: "Special birthday dinner at a local restaurant in Metuchen, NJ, followed by family time."
                     }
                 ]
             },
@@ -726,62 +1054,21 @@
                 date: "Monday, July 14",
                 title: "Bronx Zoo Adventure",
                 summary: "Wildlife exploration and scenic bridge views",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "8:30 AM - 10:00 AM",
-                                activity: "Travel to Bronx Zoo",
-                                description: "Drive to Bronx Zoo via scenic route (1.5 hours)",
-                                tags: ["Travel"],
-                                cost: "Toll: $17, Parking: $24"
-                            },
-                            {
-                                time: "10:00 AM",
-                                activity: "Bronx Zoo Visit",
-                                description: "Explore one of the world's largest metropolitan zoos with over 4,000 animals across 265 acres of wildlife conservation.",
-                                icon: "🦁",
-                                tags: ["Wildlife", "Conservation", "Family Fun"],
-                                featured: true
-                            }
-                        ]
+                        time: "8:30 AM - 10:00 AM",
+                        activity: "Travel to Bronx Zoo",
+                        description: "Drive to Bronx Zoo via scenic route (1.5 hours)"
                     },
                     {
-                        period: "Afternoon",
-                        activities: [
-                            {
-                                time: "4:00 PM - 5:00 PM",
-                                activity: "Travel to Fort Lee Park",
-                                description: "Drive from Bronx Zoo to Fort Lee Park for bridge views (1 hour)",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "5:00 PM",
-                                activity: "Fort Lee Park & GWB Views",
-                                description: "Breathtaking panoramic views of the George Washington Bridge and Manhattan skyline from New Jersey side.",
-                                icon: "🌉",
-                                tags: ["Scenic Views", "Photography", "Sunset"]
-                            }
-                        ]
+                        time: "10:00 AM",
+                        activity: "Bronx Zoo Visit",
+                        description: "Explore one of the world's largest metropolitan zoos with over 4,000 animals across 265 acres of wildlife conservation."
                     },
                     {
-                        period: "Evening",
-                        activities: [
-                            {
-                                time: "7:00 PM - 8:00 PM",
-                                activity: "Return to New Brunswick",
-                                description: "Drive back to hotel via local roads (1 hour)",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "8:00 PM",
-                                activity: "Free Evening",
-                                description: "Dinner and family time to recharge",
-                                icon: "🍽️",
-                                tags: ["Rest", "Family Time"]
-                            }
-                        ]
+                        time: "5:00 PM",
+                        activity: "Fort Lee Park & GWB Views",
+                        description: "Breathtaking panoramic views of the George Washington Bridge and Manhattan skyline from New Jersey side."
                     }
                 ]
             },
@@ -789,54 +1076,16 @@
                 date: "Tuesday, July 15",
                 title: "Rutgers Campus Tour",
                 summary: "University visit and Newark exploration",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "10:00 AM",
-                                activity: "Rutgers College Tour",
-                                description: "Comprehensive campus tour and information session at prestigious Rutgers University, exploring academic facilities and student life.",
-                                icon: "🎓",
-                                tags: ["Education", "Campus Tour", "University Life"]
-                            }
-                        ]
+                        time: "10:00 AM",
+                        activity: "Rutgers College Tour",
+                        description: "Comprehensive campus tour and information session at prestigious Rutgers University, exploring academic facilities and student life."
                     },
                     {
-                        period: "Afternoon",
-                        activities: [
-                            {
-                                time: "2:00 PM",
-                                activity: "Drive to Newark",
-                                description: "New Brunswick → Downtown Newark exploration",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "2:45 PM",
-                                activity: "Prudential Center & Newark",
-                                description: "Visit Newark's premier sports and entertainment venue and explore the downtown area.",
-                                icon: "🏟️",
-                                tags: ["Sports Venue", "Urban Culture", "Architecture"]
-                            },
-                            {
-                                time: "3:45 PM",
-                                activity: "Return to New Brunswick",
-                                description: "Newark → New Brunswick via highway",
-                                tags: ["Travel"]
-                            }
-                        ]
-                    },
-                    {
-                        period: "Evening",
-                        activities: [
-                            {
-                                time: "4:20 PM",
-                                activity: "Free Evening",
-                                description: "Extended family time and relaxation, dinner at leisure, preparation for Manhattan day.",
-                                icon: "🛋️",
-                                tags: ["Family Time", "Rest", "Preparation"]
-                            }
-                        ]
+                        time: "2:45 PM",
+                        activity: "Prudential Center & Newark",
+                        description: "Visit Newark's premier sports and entertainment venue and explore the downtown area."
                     }
                 ]
             },
@@ -844,85 +1093,31 @@
                 date: "Wednesday, July 16",
                 title: "Manhattan Exploration",
                 summary: "Iconic NYC landmarks and cultural districts",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "7:00 AM",
-                                activity: "Travel to Manhattan",
-                                description: "Drive to Jersey City → PATH to World Trade Center",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "8:10 AM",
-                                activity: "World Trade Center",
-                                description: "Moving memorial experience and reflection at Ground Zero, witnessing this architectural marvel and historical site.",
-                                icon: "🏛️",
-                                tags: ["Memorial", "History", "Reflection"],
-                                featured: true
-                            },
-                            {
-                                time: "9:50 AM",
-                                activity: "Downtown Walking Tour",
-                                description: "Walking tour through Tribeca, Chinatown, and Little Italy with authentic lunch and neighborhood exploration.",
-                                icon: "🚶",
-                                tags: ["Cultural Districts", "Food", "Walking Tour"]
-                            }
-                        ]
+                        time: "8:10 AM",
+                        activity: "World Trade Center",
+                        description: "Moving memorial experience and reflection at Ground Zero, witnessing this architectural marvel and historical site."
                     },
                     {
-                        period: "Afternoon",
-                        activities: [
-                            {
-                                time: "1:05 PM",
-                                activity: "Ghostbusters HQ & Soho",
-                                description: "Iconic movie location and trendy Soho neighborhood exploration",
-                                icon: "👻",
-                                tags: ["Movie Location", "Photo Op", "Trendy District"]
-                            },
-                            {
-                                time: "2:40 PM",
-                                activity: "Times Square",
-                                description: "Experience the electrifying energy of the Crossroads of the World, Broadway district, and classic NYC atmosphere.",
-                                icon: "🎭",
-                                tags: ["Iconic NYC", "Broadway", "Energy"],
-                                featured: true
-                            },
-                            {
-                                time: "4:20 PM",
-                                activity: "Madison Square Garden",
-                                description: "Quick visit to the World's Most Famous Arena",
-                                icon: "🏟️",
-                                tags: ["Sports Venue", "Famous Arena"]
-                            }
-                        ]
+                        time: "9:50 AM",
+                        activity: "Downtown Walking Tour",
+                        description: "Walking tour through Tribeca, Chinatown, and Little Italy with authentic lunch and neighborhood exploration."
                     },
                     {
-                        period: "Evening",
-                        activities: [
-                            {
-                                time: "5:00 PM",
-                                activity: "Empire State Building",
-                                description: "Ascend to the observatory for breathtaking 360° city views, especially stunning at sunset.",
-                                icon: "🏢",
-                                tags: ["Observatory", "City Views", "Sunset"],
-                                featured: true
-                            },
-                            {
-                                time: "7:45 PM",
-                                activity: "Central Park",
-                                description: "Evening stroll through the serene Conservatory Garden, finding tranquility in Manhattan's green oasis.",
-                                icon: "🌳",
-                                tags: ["Nature", "Evening Walk", "Peaceful"]
-                            },
-                            {
-                                time: "9:45 PM",
-                                activity: "Return Journey",
-                                description: "Subway → PATH → Drive to New Brunswick",
-                                tags: ["Travel"]
-                            }
-                        ]
+                        time: "2:40 PM",
+                        activity: "Times Square",
+                        description: "Experience the electrifying energy of the Crossroads of the World, Broadway district, and classic NYC atmosphere."
+                    },
+                    {
+                        time: "5:00 PM",
+                        activity: "Empire State Building",
+                        description: "Ascend to the observatory for breathtaking 360° city views, especially stunning at sunset."
+                    },
+                    {
+                        time: "7:45 PM",
+                        activity: "Central Park",
+                        description: "Evening stroll through the serene Conservatory Garden, finding tranquility in Manhattan's green oasis."
                     }
                 ]
             },
@@ -930,63 +1125,21 @@
                 date: "Thursday, July 17",
                 title: "Brooklyn Adventure",
                 summary: "Coney Island fun and Brooklyn culture",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "8:30 AM",
-                                activity: "Drive to Coney Island",
-                                description: "New Brunswick → Coney Island, Brooklyn via bridges",
-                                tags: ["Travel"],
-                                cost: "Tolls: $36, Parking: $25"
-                            },
-                            {
-                                time: "10:00 AM",
-                                activity: "Coney Island Experience",
-                                description: "Classic boardwalk experience with thrilling rides, beach time, and authentic Nathan's Famous hot dogs.",
-                                icon: "🎢",
-                                tags: ["Boardwalk", "Amusement Park", "Beach", "Classic NYC"],
-                                featured: true
-                            }
-                        ]
+                        time: "10:00 AM",
+                        activity: "Coney Island Experience",
+                        description: "Classic boardwalk experience with thrilling rides, beach time, and authentic Nathan's Famous hot dogs."
                     },
                     {
-                        period: "Afternoon",
-                        activities: [
-                            {
-                                time: "2:25 PM",
-                                activity: "Barclays Center",
-                                description: "Modern arena visit and exploration of downtown Brooklyn's cultural scene and architecture.",
-                                icon: "🏟️",
-                                tags: ["Modern Architecture", "Brooklyn Culture", "Sports"]
-                            },
-                            {
-                                time: "3:40 PM",
-                                activity: "Junior's Restaurant",
-                                description: "World-famous cheesecake at this Brooklyn institution since 1950, a true local culinary experience.",
-                                icon: "🍰",
-                                tags: ["Famous Cheesecake", "Brooklyn Institution", "Local Culture"]
-                            }
-                        ]
+                        time: "2:25 PM",
+                        activity: "Barclays Center",
+                        description: "Modern arena visit and exploration of downtown Brooklyn's cultural scene and architecture."
                     },
                     {
-                        period: "Evening",
-                        activities: [
-                            {
-                                time: "5:40 PM",
-                                activity: "Return to New Brunswick",
-                                description: "Scenic drive back to New Brunswick",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "7:00 PM",
-                                activity: "Free Evening",
-                                description: "Dinner and family time to unwind from Brooklyn adventure.",
-                                icon: "🍽️",
-                                tags: ["Rest", "Family Time", "Reflection"]
-                            }
-                        ]
+                        time: "3:40 PM",
+                        activity: "Junior's Restaurant",
+                        description: "World-famous cheesecake at this Brooklyn institution since 1950, a true local culinary experience."
                     }
                 ]
             },
@@ -994,48 +1147,11 @@
                 date: "Friday, July 18",
                 title: "American Dream Mall",
                 summary: "Shopping and entertainment complex",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "10:00 AM",
-                                activity: "Drive to American Dream",
-                                description: "New Brunswick → American Dream Mall (complimentary parking)",
-                                tags: ["Travel"]
-                            }
-                        ]
-                    },
-                    {
-                        period: "Afternoon",
-                        activities: [
-                            {
-                                time: "10:40 AM",
-                                activity: "American Dream Mall",
-                                description: "Full day of shopping, dining, and entertainment including attractions, retail therapy, and family activities.",
-                                icon: "🛍️",
-                                tags: ["Shopping", "Entertainment", "Family Fun", "Dining"],
-                                featured: true
-                            }
-                        ]
-                    },
-                    {
-                        period: "Evening",
-                        activities: [
-                            {
-                                time: "3:40 PM",
-                                activity: "Return to New Brunswick",
-                                description: "American Dream → New Brunswick for final evening",
-                                tags: ["Travel"]
-                            },
-                            {
-                                time: "4:20 PM",
-                                activity: "Final Evening",
-                                description: "Return to New Brunswick for final evening of trip, packing, reflection on memories made, and preparation for departure.",
-                                icon: "📦",
-                                tags: ["Preparation", "Reflection", "Packing"]
-                            }
-                        ]
+                        time: "10:40 AM",
+                        activity: "American Dream Mall",
+                        description: "Full day of shopping, dining, and entertainment including attractions, retail therapy, and family activities."
                     }
                 ]
             },
@@ -1043,132 +1159,215 @@
                 date: "Saturday, July 19",
                 title: "Departure Day",
                 summary: "Journey home with incredible memories",
-                timeBlocks: [
+                activities: [
                     {
-                        period: "Morning",
-                        activities: [
-                            {
-                                time: "6:00 AM",
-                                activity: "Departure to Georgia",
-                                description: "Hotel check-out and safe travels back to Atlanta, carrying unforgettable memories of the NYC adventure.",
-                                icon: "✈️",
-                                tags: ["Departure", "Travel Home", "Memories"]
-                            }
-                        ]
+                        time: "6:00 AM",
+                        activity: "Departure to Georgia",
+                        description: "Hotel check-out and safe travels back to Atlanta, carrying unforgettable memories of the NYC adventure."
                     }
                 ]
             }
         ];
 
-        function openGallery(activityName) {
-            const modal = document.getElementById('galleryModal');
-            const image = document.getElementById('galleryImage');
-            const description = document.getElementById('galleryDescription');
+        const nycFacts = [
+            {
+                category: "NYC FOOD FACT",
+                text: "The NYC bagel's hole exists because vendors would string them on dowels to sell on the street!"
+            },
+            {
+                category: "ARCHITECTURE MARVEL",
+                text: "The Empire State Building was built in just 410 days and has its own ZIP code: 10118!"
+            },
+            {
+                category: "SUBWAY SECRETS",
+                text: "The NYC subway system has 472 stations - more than any other rapid transit system in the world!"
+            },
+            {
+                category: "CENTRAL PARK MAGIC",
+                text: "Central Park was designed by Frederick Law Olmsted and is entirely man-made, requiring 20,000 workers!"
+            },
+            {
+                category: "BROADWAY WONDER",
+                text: "Broadway theaters must have at least 500 seats to be considered 'Broadway' - anything smaller is 'Off-Broadway'!"
+            },
+            {
+                category: "BROOKLYN HISTORY",
+                text: "Brooklyn was once its own city and would be the 4th largest city in the US if it were still independent!"
+            },
+            {
+                category: "MANHATTAN FACT",
+                text: "Manhattan was purchased from Native Americans for goods worth about $24 in 1626!"
+            },
+            {
+                category: "STATUE SURPRISE",
+                text: "The Statue of Liberty was originally a shiny brown copper color - it turned green from oxidation over 30 years!"
+            }
+        ];
+
+        let currentFactIndex = 0;
+
+        // Mobile Navigation
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to selected nav tab
+            event.target.closest('.nav-tab').classList.add('active');
+        }
+
+        // Day Navigation for Desktop
+        function jumpToDay(dayIndex) {
+            // Update active nav button
+            document.querySelectorAll('.day-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.day-nav-btn')[dayIndex].classList.add('active');
+            
+            // Switch to schedule tab if on mobile
+            if (window.innerWidth < 1024) {
+                switchTab('schedule');
+            }
+            
+            // Expand the selected day card
+            expandDayCard(dayIndex);
+        }
+
+        // Day Card Expansion
+        function expandDayCard(dayIndex) {
+            const cards = document.querySelectorAll('.day-card');
+            cards.forEach((card, index) => {
+                if (index === dayIndex) {
+                    card.classList.add('expanded');
+                } else {
+                    card.classList.remove('expanded');
+                }
+            });
+        }
+
+        // NYC Facts Rotator
+        function rotateFact() {
+            currentFactIndex = (currentFactIndex + 1) % nycFacts.length;
+            const fact = nycFacts[currentFactIndex];
+            
+            document.querySelector('.fact-category').textContent = fact.category;
+            document.getElementById('current-fact').textContent = fact.text;
+        }
+
+        // Image modal for activity photos
+        function openImageModal(activityName) {
             if (activityImages[activityName]) {
-                image.src = activityImages[activityName].url;
-                description.textContent = activityImages[activityName].description;
-                modal.classList.add('active');
+                // Create simple modal or lightbox effect
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 2000;
+                    cursor: pointer;
+                `;
+                
+                const img = document.createElement('img');
+                img.src = activityImages[activityName];
+                img.style.cssText = `
+                    max-width: 90%;
+                    max-height: 90%;
+                    border-radius: 8px;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+                `;
+                
+                modal.appendChild(img);
+                document.body.appendChild(modal);
+                
+                modal.onclick = () => document.body.removeChild(modal);
+                
+                // Auto-close after 3 seconds
+                setTimeout(() => {
+                    if (document.body.contains(modal)) {
+                        document.body.removeChild(modal);
+                    }
+                }, 3000);
             }
         }
 
-        function closeGallery() {
-            document.getElementById('galleryModal').classList.remove('active');
-        }
-
-        function toggleDay(dayIndex) {
-            const header = document.querySelector(`[data-day="${dayIndex}"]`);
-            const content = document.getElementById(`day-content-${dayIndex}`);
-            
-            // Close all other days
-            document.querySelectorAll('.day-header').forEach(h => {
-                if (h !== header) {
-                    h.classList.remove('active');
-                }
-            });
-            
-            document.querySelectorAll('.day-content').forEach(c => {
-                if (c !== content) {
-                    c.classList.remove('active');
-                }
-            });
-            
-            // Toggle current day
-            header.classList.toggle('active');
-            content.classList.toggle('active');
-        }
-
-        function renderItinerary() {
-            const container = document.getElementById('itinerary');
+        // Render Schedule Tab
+        function renderSchedule() {
+            const container = document.querySelector('.day-cards');
             
             container.innerHTML = itineraryData.map((day, dayIndex) => `
-                <div class="day-accordion">
-                    <div class="day-header" data-day="${dayIndex}" onclick="toggleDay(${dayIndex})">
-                        <div class="day-info">
-                            <div class="day-title">${day.date}</div>
-                            <div class="day-summary">${day.summary}</div>
-                        </div>
-                        <div class="day-toggle">▼</div>
+                <div class="day-card ${dayIndex === 4 ? 'current' : ''}" onclick="expandDayCard(${dayIndex})">
+                    <div class="day-card-header">
+                        <div class="day-card-date">${day.date}</div>
+                        <div class="day-card-summary">${day.summary}</div>
+                        <div class="day-card-toggle">▼</div>
                     </div>
-                    <div class="day-content" id="day-content-${dayIndex}">
-                        <div class="day-activities">
-                            ${day.timeBlocks.map(timeBlock => `
-                                <div class="time-block">
-                                    <div class="time-section-header">${timeBlock.period}</div>
-                                    ${timeBlock.activities.map(activity => {
-                                        const isTravel = activity.tags && activity.tags.includes('Travel');
-                                        
-                                        const hasImage = activityImages[activity.activity] && !isTravel;
-                                        const visualContent = hasImage ? 
-                                            `<div class="activity-visual" onclick="openGallery('${activity.activity}')">
-                                                <img class="activity-image" src="${activityImages[activity.activity].url}" alt="${activity.activity}">
-                                            </div>` : 
-                                            (isTravel ? '' : 
-                                            `<div class="activity-visual">
-                                                <div class="activity-icon">${activity.icon}</div>
-                                            </div>`);
-                                        
-                                        const tagsHtml = activity.tags && !isTravel ? 
-                                            `<div class="activity-tags">
-                                                ${activity.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                                            </div>` : '';
-                                        
-                                        const costHtml = activity.cost ? 
-                                            `<div class="cost-info">💰 ${activity.cost}</div>` : '';
-                                        
-                                        return `
-                                            <div class="activity-item ${activity.featured ? 'featured' : ''} ${isTravel ? 'travel-item' : ''}">
-                                                <div class="activity-time">${activity.time}</div>
-                                                <div class="activity-content">
-                                                    ${visualContent}
-                                                    <div class="activity-details">
-                                                        <div class="activity-name">${activity.activity}</div>
-                                                        <div class="activity-description">${activity.description}</div>
-                                                        ${tagsHtml}
-                                                        ${costHtml}
-                                                    </div>
-                                                </div>
+                    <div class="day-card-content">
+                        <div class="activity-list">
+                            ${day.activities.filter(activity => !activity.time.includes('Travel')).map(activity => {
+                                const hasImage = activityImages[activity.activity];
+                                
+                                return `
+                                <div class="activity-item">
+                                    <div class="activity-time">${activity.time}</div>
+                                    <div class="activity-main">
+                                        <div class="activity-details">
+                                            <div class="activity-name">${activity.activity}</div>
+                                            <div class="activity-desc">${activity.description}</div>
+                                        </div>
+                                        ${hasImage ? `
+                                            <div class="activity-image-card" onclick="openImageModal('${activity.activity}')">
+                                                <img class="activity-image" src="${activityImages[activity.activity]}" alt="${activity.activity}">
                                             </div>
-                                        `;
-                                    }).join('')}
+                                        ` : `
+                                            <div class="activity-icon-card">
+                                                🎯
+                                            </div>
+                                        `}
+                                    </div>
                                 </div>
-                            `).join('')}
+                            `;
+                            }).join('')}
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Close gallery on outside click
-        document.getElementById('galleryModal').addEventListener('click', function(e) {
-            if (e.target === this) closeGallery();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSchedule();
+            
+            // Auto-rotate facts every 30 seconds
+            setInterval(rotateFact, 30000);
+            
+            // Simulate location updates
+            setTimeout(() => {
+                // Could integrate real GPS here
+                console.log('Location updated: Times Square, Manhattan');
+            }, 2000);
         });
 
-        // Initialize
-        renderItinerary();
-
-        // Open first day by default
-        setTimeout(() => toggleDay(0), 500);
+        // Handle orientation change on mobile
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                // Refresh layout if needed
+            }, 100);
+        });
     </script>
 </body>
 </html>
